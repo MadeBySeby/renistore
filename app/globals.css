@@ -8,6 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: #47b977;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -15,6 +16,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
+    --color-primary: #47b977;
     --foreground: #ededed;
   }
 }
@@ -22,5 +24,19 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --color-primary: #47b977;
+
+  font-family: "Poppins", sans-serif;
+  /* font-family: Arial, Helvetica, sans-serif; */
+}
+@layer base {
+  ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    align-items: center;
+  }
+  ul li:hover {
+    opacity: 0.7;
+  }
 }
