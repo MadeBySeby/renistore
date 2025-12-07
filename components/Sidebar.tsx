@@ -21,7 +21,10 @@ export default function Sidebar() {
       [&>li>a]:items-center
       items-baseline
 
-      [&>li>a]:gap-2">
+      [&>li>a]:gap-2
+      sm:h-full
+        
+      ">
       <li>
         <Link href="/dashboard">
           {" "}
