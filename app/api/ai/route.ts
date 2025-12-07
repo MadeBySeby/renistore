@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
     // Convert to buffer
     const arrayBuffer = await file.arrayBuffer();
-    let buffer = Buffer.from(arrayBuffer);
+    let buffer: Buffer = Buffer.from(arrayBuffer);
     let mimeType = file.type?.toLowerCase() || "";
 
     console.log("Original file type:", mimeType);
@@ -35,7 +35,9 @@ export async function POST(req: NextRequest) {
         !mimeType.includes("webp"))
     ) {
       console.log("Converting to JPEG...");
-      buffer = await sharp(buffer).jpeg({ quality: 85 }).toBuffer();
+      buffer = Buffer.from(
+        await sharp(buffer).jpeg({ quality: 85 }).toBuffer()
+      );
       mimeType = "image/jpeg";
     } else if (mimeType.includes("png")) {
       mimeType = "image/png";
