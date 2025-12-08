@@ -41,8 +41,11 @@ export default function AiWeightPage() {
         <input
           type="file"
           accept="image/*"
-          onChange={(e) => {
-            setImage(e?.target.files?.[0] || null);
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+
+            setImage(file);
           }}
         />
         {image && (
@@ -79,6 +82,15 @@ export default function AiWeightPage() {
                       }>
                       დაამატე +40%იანი ფასნამატი
                     </button>
+                    {sellingPrice && (
+                      <div>
+                        გასაყიდი ფასი{" "}
+                        <span className=" text-2xl text-red-600">
+                          {sellingPrice}
+                        </span>{" "}
+                        ლ
+                      </div>
+                    )}
                   </div>
                 </div>
               )

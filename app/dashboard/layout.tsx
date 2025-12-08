@@ -12,14 +12,16 @@ export default function DashboardLayout({
   return (
     <div className="w-full align-bottom flex h-screen overflow-hidden ">
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-      <div className="flex-1 flex flex-col bg-[radial-gradient(circle_at_top,_#111827_0,_#020712_55%)] text-white ">
+      <div className="flex-1 flex flex-col bg-[radial-gradient(circle_at_top,_#111827_0,_#020712_55%)] text-white min-h-0 ">
         <button
           className="md:hidden p-4 text-2xl"
           onClick={() => setSidebarOpen(!sidebarOpen)}>
           <HiMenu />
         </button>
-        <Topbar />
-        <main className="p-6  flex-1">{children}</main>
+        {/* <Topbar /> */}
+        <main className="p-6  min-h-0 overflow-y-auto  no-scrollbar flex-1">
+          {children}
+        </main>
       </div>
     </div>
   );
