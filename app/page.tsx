@@ -2,7 +2,7 @@ import Image from "next/image";
 import heroMG from "../public/heromg.png";
 export default function Home() {
   return (
-    <div className="  flex p-5 gap-5 ">
+    <div className="p-5 flex p-5 gap-5 ">
       <div className=" relative w-1/2 h-[300px] sm:h-[400px] md:h-[500px]">
         <Image
           src="/heromg.png"
@@ -12,9 +12,10 @@ export default function Home() {
         />
       </div>
       <div className=" flex flex-col items-start gap-10 w-1/2">
-        <h1 className="text-4xl font-bold whitespace-break-spaces sm:text-3xl md:text-4xl lg:text-6xl">
+        <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
           Premium <br />
-          Streetwear, <br />
+          Streetwear,
+          <br />
           Delivered Fast
         </h1>
         <ul className="flex flex-col gap-2">
@@ -29,10 +30,6 @@ export default function Home() {
           <button className=" text-white px-4 py-2 rounded border-1 border-primary">
             New Drops
           </button>
-        </div>
-        <div className="w-full">
-          ass
-          <div>asa</div> rame
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import React from "react";
 import { FiUser } from "react-icons/fi";
 export default function Navbar() {
   return (
-    <div className=" flex justify-between items-center p-3 border-b-1 border-gray-800 ">
+    <div className="flex-wrap flex justify-between items-center p-3 border-b-1 border-gray-800 ">
       <h1 className="text-4xl text-primary">ReniStore</h1>
       <ul>
         <li>
