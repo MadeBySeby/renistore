@@ -15,7 +15,7 @@ export default function Sidebar({
       <div
         className={`fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity duration-300
         ${open ? "opacity-100 visible" : "opacity-0 invisible"}`}
-        onClick={() => setOpen(false)}
+        onClick={() => setOpen?.(false)}
       />
 
       <aside
@@ -29,7 +29,7 @@ export default function Sidebar({
         ${open ? "translate-x-0" : "-translate-x-full"}
         `}>
         <ul
-          onClick={() => setOpen(false)}
+          onClick={() => setOpen?.(false)}
           className="flex flex-col gap-5 p-4
         border-r-2 border-gray-800
       bg-[radial-gradient(circle_at_top,_#111827_0,_#020712_55%)]
