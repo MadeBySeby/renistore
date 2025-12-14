@@ -52,22 +52,15 @@ export async function POST(req: NextRequest) {
     const base64 = buffer.toString("base64");
 
     const prompt = `
-AYou are an expert product-analysis system that estimates shipping weight with maximum accuracy.
+Analyze this product image.
 
-TASK:
-1. Analyze the product image in detail.
-2. Identify the exact or closest matching product model if possible.
-3. Use external world knowledge (e-commerce data, marketplace listings, manufacturer specs).
-4. Consider materials, dimensions, typical packaging weight, and similar products.
-5. Produce the most realistic and accurate weight estimate in kilograms.
+1) Estimate the shipping weight in kilograms (realistic guess).
 
-STRICT OUTPUT RULES:
-- Output ONLY a number (example: 1.25)
-- No text, no units, no explanation.
-- If accurate estimation is impossible, output -1.
 
-Return the final estimated weight (kg) as a plain number only.
-
+❗ VERY IMPORTANT:
+Return only the estimated weight as a number in kilograms (kg).
+Do not return any additional text, explanations, or units.
+If you cannot estimate the weight, return -1.
 
 `.trim();
 

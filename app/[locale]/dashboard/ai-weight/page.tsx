@@ -1,6 +1,5 @@
 "use client";
 import React, { useMemo, useState } from "react";
-
 export default function AiWeightPage() {
   const [image, setImage] = useState<File | null>(null);
   const [weight, setWeight] = useState<string | null>(null);
@@ -33,11 +32,13 @@ export default function AiWeightPage() {
     parseFloat(chineesePrice || "0") * 0.38 +
     (parseFloat(weight || "0") || 0) * 21.56
   ).toFixed(2);
+
   return (
     <div className=" sm:px-8 sm:flex-column  sm:items-center md:px-20 lg:px-32 xl:px-40 2xl:px-48 py-8">
       შეამოწმე პროდუქტის თვითღირებულება AI-ს დახმარებით
       <section>
-        <div>AI Weight Page</div>
+        <div className="">AI Weight Page</div>
+
         <input
           type="file"
           accept="image/*"

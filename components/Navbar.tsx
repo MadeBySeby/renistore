@@ -1,39 +1,48 @@
+"use client";
 import Link from "next/link";
 import React from "react";
 import { FiUser } from "react-icons/fi";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLocale, useTranslations } from "next-intl";
 export default function Navbar() {
+  const t = useTranslations("nav");
+  const locale = useLocale();
   return (
-    <div className="flex-wrap flex justify-between items-center p-3 border-b-1 border-gray-800 ">
-      <h1 className="text-4xl text-primary">ReniStore</h1>
+    <nav className="flex-wrap flex justify-between items-center p-3 border-b-1 border-gray-800 ">
+      <LanguageSwitcher />
+      <h1 className="text-4xl text-primary mask-l-from-0%-500 to-blue-500 font-bold">
+        <Link href="/">{t("title")}</Link>
+      </h1>
       <ul>
         <li>
           {" "}
-          <Link href="/">Home</Link>{" "}
+          <Link href={`/${locale}`}>{t("home")}</Link>
+          {"s "}
         </li>
         <li>
           {" "}
-          <Link href="/shop">Shop</Link>{" "}
+          <Link href={`/${locale}/shop`}>{t("shop")}</Link>{" "}
         </li>
         <li>
           {" "}
-          <Link href="/new-arrivals">New Arrivals</Link>{" "}
+          <Link href={`/${locale}/new-arrivals`}>{t("newArrivals")}</Link>{" "}
         </li>
         <li>
           {" "}
-          <Link href="/contact">Contact</Link>{" "}
+          <Link href={`/${locale}/contact`}>{t("contact")}</Link>{" "}
         </li>
       </ul>
       <ul>
         <li>
-          <Link href="/cart">Cart</Link>
+          <Link href={`/${locale}/cart`}>{t("cart")}</Link>
         </li>
         <li>
-          <Link href="/dashboard">
+          <Link href={`/${locale}/dashboard`}>
             {" "}
             <FiUser />
           </Link>
         </li>
       </ul>
-    </div>
+    </nav>
   );
 }

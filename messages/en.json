@@ -1,0 +1,21 @@
+{
+  "nav": {
+    "title": "ReniStore",
+    "home": "Home",
+    "shop": "Shop",
+    "newArrivals": "New Arrivals",
+    "dashboard": "Dashboard",
+    "contact": "Contact",
+    "cart": "Cart"
+  },
+  "home": {
+    "title": "Welcome to Renistore",
+    "subtitle": "Your premium online store",
+    "shopNow": "Shop Now",
+    "newDrops": "New Drops"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong"
+  }
+}

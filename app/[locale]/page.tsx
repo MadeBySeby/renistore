@@ -1,6 +1,9 @@
+"use client";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import heroMG from "../public/heromg.png";
 export default function Home() {
+  const t = useTranslations("home");
   return (
     <div className="p-5 flex p-5 gap-5 ">
       <div className=" relative w-1/2 h-[300px] sm:h-[400px] md:h-[500px]">
@@ -13,10 +16,10 @@ export default function Home() {
       </div>
       <div className=" flex flex-col items-start gap-10 w-1/2">
         <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
-          Premium <br />
-          Streetwear,
+          {t("title")} <br />
+          {/* Streetwear,
           <br />
-          Delivered Fast
+          Delivered Fast */}
         </h1>
         <ul className="flex flex-col gap-2">
           <li>🔥Quality streetwear we wear ourselves</li>
@@ -25,10 +28,10 @@ export default function Home() {
         </ul>
         <div className="flex flex-row gap-4 mt-10">
           <button className="bg-primary text-white px-4 py-2 rounded">
-            Shop Now
+            {t("shopNow")}
           </button>
           <button className=" text-white px-4 py-2 rounded border-1 border-primary">
-            New Drops
+            {t("newDrops")}
           </button>
         </div>
       </div>
