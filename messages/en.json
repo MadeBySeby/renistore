@@ -8,14 +8,69 @@
     "contact": "Contact",
     "cart": "Cart"
   },
+
   "home": {
-    "title": "Welcome to Renistore",
-    "subtitle": "Your premium online store",
+    "title": "Welcome to ReniStore",
+    "subtitlePart1": "Premium",
+    "subtitlePart2": "streetwear",
+    "subtitlePart3": "Delivered Fast",
     "shopNow": "Shop Now",
-    "newDrops": "New Drops"
+    "newDrops": "New Drops",
+    "features": {
+      "quality": "🔥 Quality streetwear we wear ourselves",
+      "delivery": "🚚 Products arrive in 7–10 working days",
+      "shipping": "📦 Free shipping nationwide"
+    }
   },
+
+  "shop": {
+    "title": "Shop",
+    "allProducts": "All Products",
+    "filters": "Filters",
+    "price": "Price",
+    "addToCart": "Add to Cart"
+  },
+
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "orders": "Orders",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Have a question? Get in touch with us",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send Message"
+  },
+
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "checkout": "Checkout",
+    "total": "Total"
+  },
+
+  "footer": {
+    "rights": "All rights reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+
   "common": {
     "loading": "Loading...",
-    "error": "Something went wrong"
+    "error": "Something went wrong",
+    "success": "Success",
+    "cancel": "Cancel"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "orders": "Orders",
+    "products": "Products",
+    "aiWeight": "AI Weight"
   }
 }

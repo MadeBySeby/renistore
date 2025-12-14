@@ -1,8 +1,11 @@
+"use client";
 import Link from "next/link";
 import React from "react";
 import { FaHome, FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { GrDashboard, GrOrderedList } from "react-icons/gr";
 import { MdDashboard } from "react-icons/md";
+import { useLocale, useTranslations } from "next-intl";
+
 export default function Sidebar({
   open,
   setOpen,
@@ -10,6 +13,8 @@ export default function Sidebar({
   open?: boolean;
   setOpen?: (open: boolean) => void;
 }) {
+  const t = useTranslations("sidebar");
+  const locale = useLocale();
   return (
     <>
       <div
@@ -26,6 +31,7 @@ export default function Sidebar({
         
         transform transition-transform duration-300
         md:static md:translate-x-0
+        
         ${open ? "translate-x-0" : "-translate-x-full"}
         `}>
         <ul
@@ -49,27 +55,27 @@ export default function Sidebar({
    
       ">
           <li>
-            <Link href="/dashboard">
+            <Link href={`/${locale}/dashboard`}>
               {" "}
-              dashboard
+              {t("dashboard")}
               <GrDashboard />{" "}
             </Link>
           </li>
           <li>
-            <Link href="/dashboard/orders">
-              Orders
+            <Link href={`/${locale}/dashboard/orders`}>
+              {t("orders")}
               <FaUser />
             </Link>
           </li>
           <li>
-            <Link href="/dashboard/products">
-              Products
+            <Link href={`/${locale}/dashboard/products`}>
+              {t("products")}
               <GrOrderedList />
             </Link>
           </li>
           <li>
-            <Link href="/dashboard/ai-weight">
-              Ai Weight
+            <Link href={`/${locale}/dashboard/ai-weight`}>
+              {t("aiWeight")}
               <MdDashboard />
             </Link>
           </li>

@@ -17,7 +17,6 @@ export default function Navbar() {
         <li>
           {" "}
           <Link href={`/${locale}`}>{t("home")}</Link>
-          {"s "}
         </li>
         <li>
           {" "}

@@ -1,33 +1,26 @@
 "use client";
+import { sendToAi } from "@/libs/aiUtils";
 import React, { useMemo, useState } from "react";
 export default function AiWeightPage() {
   const [image, setImage] = useState<File | null>(null);
   const [weight, setWeight] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>(null);
   const [chineesePrice, setChineesePrice] = useState<string | null>(null);
-  const [buttonClicked, setButtonClicked] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [sellingPrice, setSellingPrice] = useState<string | null>(null);
-  async function sentToAi() {
+  async function handleEstimate() {
     if (!image) return;
-    const formdata = new FormData();
-    formdata.append("image", image);
-    // formdata.append("chineesePrice", chineesePrice || "");
-    const res = await fetch("/api/ai", {
-      method: "POST",
-      body: formdata,
-    });
-    const data = await res.json();
-    console.log("AI Response:", data);
-    setWeight(data.estimatedWeightKg?.toString() || null);
-    // setPrice(data.finalPriceGEL?.toString() || null);
+    setLoading(true);
+    try {
+      const data = await sendToAi(image, "/api/ai");
+      setWeight(data.estimatedWeightKg?.toString() || "-1");
+    } catch (error) {
+      console.error("Error estimating weight:", error);
+    } finally {
+      setLoading(false);
+    }
   }
-  // const calculatedPrice = useMemo(() => {
-  //   if (!weight || !chineesePrice) return null;
-  //   const priceInYuan = parseFloat(chineesePrice);
-  //   const weightKg = parseFloat(weight);
-  //   const finalPrice = priceInYuan * 0.38 + weightKg * 21.56;
-  //   return finalPrice.toFixed(2);
-  // }, [weight, chineesePrice]);
+
   const calculatedPrice = (
     parseFloat(chineesePrice || "0") * 0.38 +
     (parseFloat(weight || "0") || 0) * 21.56
@@ -51,7 +44,7 @@ export default function AiWeightPage() {
         />
         {image && (
           <div className="flex items-baseline flex-col gap-4 mt-4">
-            {buttonClicked && !weight ? (
+            {loading ? (
               <div>მუშავდება...</div>
             ) : (
               weight && (
@@ -110,8 +103,7 @@ export default function AiWeightPage() {
             />
             <button
               onClick={() => {
-                sentToAi();
-                setButtonClicked(true);
+                handleEstimate();
               }}
               className="bg-primary text-white px-4 py-2 rounded mt-5">
               გაუგზავნე ხელოვნურ ინტელექტს
