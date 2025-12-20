@@ -1,5 +1,5 @@
 "use client";
-import { sendToAi } from "@/libs/aiUtils";
+import { sendToAi } from "@/lib/aiUtils";
 import React, { useMemo, useState } from "react";
 export default function AiWeightPage() {
   const [image, setImage] = useState<File | null>(null);

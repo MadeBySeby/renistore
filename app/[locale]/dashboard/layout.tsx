@@ -1,28 +1,31 @@
-"use client";
-import Sidebar from "@/components/Sidebar";
-import Topbar from "@/components/Topbar";
-import React, { useState } from "react";
-import { HiMenu } from "react-icons/hi";
-export default function DashboardLayout({
+import DashboardLayoutComponent from "@/components/DashboardLayoutComponent";
+import { getCurrentUser, getUserProfile } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import React from "react";
+export default async function DashboardLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { locale } = await params;
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect(`/${locale}/login`);
+  }
+  const profile = await getUserProfile(user.id);
+  if (profile?.role !== "admin") {
+    redirect(`/${locale}/`);
+  }
+
   return (
-    <div className="w-full align-bottom flex h-screen overflow-hidden ">
-      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-      <div className="flex-1 flex flex-col bg-[radial-gradient(circle_at_top,_#111827_0,_#020712_55%)] text-white min-h-0 ">
-        <button
-          className="md:hidden p-4 text-2xl"
-          onClick={() => setSidebarOpen(!sidebarOpen)}>
-          <HiMenu />
-        </button>
-        {/* <Topbar /> */}
-        <main className="p-6  min-h-0 overflow-y-auto  no-scrollbar flex-1">
-          {children}
-        </main>
-      </div>
+    <div
+      className="w-full align-bottom flex h-screen overflow
+    -hidden ">
+      <DashboardLayoutComponent user={user}>
+        {children}
+      </DashboardLayoutComponent>
     </div>
   );
 }
