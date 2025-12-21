@@ -11,6 +11,7 @@ export default function Page() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function Page() {
     setLoading(true);
 
     try {
-      const { data, error } = await signUpWithEmail(email, password);
+      const { data, error } = await signUpWithEmail(email, password, name);
       if (error) throw error;
       console.log(data);
       router.push(`/${locale}/login`);
@@ -48,6 +49,16 @@ export default function Page() {
           type="email"
           id="email"
           name="email"
+          required
+        />
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-md"
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Full Name"
           required
         />
       </div>

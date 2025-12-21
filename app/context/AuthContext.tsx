@@ -10,7 +10,13 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 
+interface Profile {
+  name?: string;
+  role: "user" | "admin";
+}
 interface AuthContextType {
+  isAdmin?: boolean;
+  profile?: Profile | null;
   user: User | null;
   loading: boolean;
   signOut: () => Promise<void>;
@@ -23,7 +29,9 @@ const LoadingIndicator = () => <div>Loading...</div>;
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const supabase = createClient();
+
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
 
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -46,9 +54,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (currentUser) {
         const { data } = await supabase
           .from("profiles")
-          .select("role")
+          .select("name, role")
           .eq("id", currentUser.id)
           .single();
+        console.log(" profile from data:", data);
+        setProfile(data);
         setIsAdmin(data?.role === "admin");
       }
       setLoading(false);
@@ -73,6 +83,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loading,
     signOut,
     isAdmin,
+    profile,
   };
 
   if (loading) {
