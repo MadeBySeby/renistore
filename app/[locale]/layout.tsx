@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { locales } from "@/i18n/config";
+import { AuthProvider } from "../context/AuthContext";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -43,14 +44,16 @@ export default async function RootLayout({
       </head>
 
       <body className=" min-h-screen bg-[#020712] text-white">
-        <NextIntlClientProvider messages={messages} locale={locale}>
-          <div className=" min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,_#111827_0,_#020712_55%)]">
-            <Navbar />
-            <main className="flex-1 w-full p-4 md:p-0">{children}</main>
+        <AuthProvider>
+          <NextIntlClientProvider messages={messages} locale={locale}>
+            <div className=" min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,_#111827_0,_#020712_55%)]">
+              <Navbar />
+              <main className="flex-1 w-full p-4 md:p-0">{children}</main>
 
-            <Footer />
-          </div>
-        </NextIntlClientProvider>
+              <Footer />
+            </div>
+          </NextIntlClientProvider>
+        </AuthProvider>
       </body>
     </html>
   );

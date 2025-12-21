@@ -1,33 +1,36 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FiUser } from "react-icons/fi";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useLocale, useTranslations } from "next-intl";
 import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function Navbar() {
+  const { user, signOut } = useAuth();
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  // const [user, setUser] = useState<any>(null);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const res = await fetch("/api/auth/user");
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-          console.log("Navbar user:", data);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        setUser(null);
-      }
-    }
-    fetchUser();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchUser() {
+  //     try {
+  //       const res = await fetch("/api/auth/user");
+  //       if (res.ok) {
+  //         const data = await res.json();
+  //         setUser(data.user);
+  //         console.log("Navbar user:", data);
+  //       } else {
+  //         setUser(null);
+  //       }
+  //     } catch (error) {
+  //       setUser(null);
+  //     }
+  //   }
+  //   fetchUser();
+  // }, []);
+  console.log("Navbar user from context:", user);
   const t = useTranslations("nav");
   const locale = useLocale();
   return (
@@ -64,6 +67,7 @@ export default function Navbar() {
               <button
                 className="cursor-pointer"
                 onClick={async () => {
+                  router.push(`/${locale}/`);
                   await signOut();
                   router.refresh();
                 }}>

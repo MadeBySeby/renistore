@@ -40,8 +40,9 @@ export default function SignInPage() {
       console.log(data, "Signed in user data");
       if (error) throw error;
 
-      router.push(`/${locale}/dashboard`);
       router.refresh();
+
+      router.push(`/${locale}/dashboard`);
     } catch (err: any) {
       console.error("Sign in failed:", err);
       setError(err.message || "Invalid email or password");
