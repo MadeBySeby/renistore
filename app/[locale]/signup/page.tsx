@@ -3,6 +3,7 @@
 import { signUpWithEmail } from "@/lib/auth-client";
 import { useLocale } from "next-intl";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 export default function Page() {
@@ -11,16 +12,22 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [error, setError] = useState("");
+  const router = useRouter();
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     setLoading(true);
 
     try {
-      await signUpWithEmail(email, password);
+      const { data, error } = await signUpWithEmail(email, password);
+      if (error) throw error;
+      console.log(data);
+      router.push(`/${locale}/login`);
+
       console.log("Signup successful");
     } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
       console.error("Signup failed", err);
     } finally {
       setLoading(false);
@@ -30,6 +37,7 @@ export default function Page() {
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 space-y-4">
       <div className="flex flex-col space-y-2">
+        {error && <p className="text-red-500 text-sm">{error}</p>}
         <label htmlFor="email" className="text-sm font-medium">
           Email
         </label>

@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getAllProducts } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
-import { signOut } from "@/lib/auth-client";
 export default function Home() {
   const [image, setImage] = useState<File | null>(null);
   const locale = useLocale();
@@ -78,11 +77,6 @@ export default function Home() {
         </div>
       </div>
       <section className="w-full  flex flex-col md:flex-col items-center gap-5 mt-10">
-        <button
-          onClick={async () => await signOut()}
-          className=" text-2xl font-bold  mb-5 bg-red-600 px-4 py-2 rounded hover:bg-red-700 transition active:scale-95 touch-manipulation">
-          sign out
-        </button>
         {products.length > 0 ? (
           <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {products.map((product) => (

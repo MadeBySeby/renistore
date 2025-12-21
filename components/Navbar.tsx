@@ -1,10 +1,33 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FiUser } from "react-icons/fi";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useLocale, useTranslations } from "next-intl";
+import { signOut } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+
 export default function Navbar() {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const res = await fetch("/api/auth/user");
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+          console.log("Navbar user:", data);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        setUser(null);
+      }
+    }
+    fetchUser();
+  }, []);
   const t = useTranslations("nav");
   const locale = useLocale();
   return (
@@ -36,9 +59,37 @@ export default function Navbar() {
           <Link href={`/${locale}/cart`}>{t("cart")}</Link>
         </li>
         <li>
+          {user ? (
+            <>
+              <button
+                className="cursor-pointer"
+                onClick={async () => {
+                  await signOut();
+                  router.refresh();
+                }}>
+                logout
+              </button>
+            </>
+          ) : (
+            <Link href={`/${locale}/login`}>login</Link>
+          )}
+        </li>
+        <li>
           <Link href={`/${locale}/dashboard`}>
             {" "}
-            <FiUser />
+            <FiUser
+              onPointerOver={() => setShowUserDropdown(true)}
+              onPointerOut={() => setShowUserDropdown(false)}
+            />
+            {showUserDropdown && user && (
+              <div
+                className=" absolute right-0 text-primary bg-white border mt-2 p-2 rounded shadow-lg"
+                onPointerOver={() => setShowUserDropdown(true)}
+                onPointerOut={() => setShowUserDropdown(false)}>
+                {/* User dropdown content */}
+                {user.email}
+              </div>
+            )}
           </Link>
         </li>
       </ul>

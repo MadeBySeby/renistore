@@ -33,17 +33,15 @@ export default function SignInPage() {
     //   setLoading(false);
     // }
     try {
-      // Sign in with Supabase
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-
+      console.log(data, "Signed in user data");
       if (error) throw error;
 
-      // Redirect to dashboard
       router.push(`/${locale}/dashboard`);
-      router.refresh(); // ← Refresh to update server state
+      router.refresh();
     } catch (err: any) {
       console.error("Sign in failed:", err);
       setError(err.message || "Invalid email or password");
@@ -53,7 +51,7 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+    <div className="h-full p-10 flex items-center justify-center ">
       <form
         onSubmit={handleSubmit}
         className="max-w-md w-full mx-auto p-6 space-y-4 bg-gray-800 rounded-lg">
