@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+
 interface User {
   token: string;
   id: string;
@@ -26,6 +27,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 interface AuthProviderProps {
   children: ReactNode;
 }
+
+const LoadingIndicator = () => <div>Loading...</div>;
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
@@ -53,6 +56,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     fetchUser();
   }, []);
+
   const signIn = async (token: string, userData: User) => {
     try {
       setUser(userData);
@@ -77,6 +81,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     signIn,
     signOut,
   };
+
+  if (loading) {
+    return <LoadingIndicator />;
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
