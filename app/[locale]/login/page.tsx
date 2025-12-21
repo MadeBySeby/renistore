@@ -15,6 +15,8 @@ export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
+
   const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -38,6 +40,7 @@ export default function SignInPage() {
         email,
         password,
       });
+      setRedirecting(true);
       console.log(data, "Signed in user data");
       if (error) throw error;
 
@@ -48,7 +51,18 @@ export default function SignInPage() {
       setError(err.message || "Invalid email or password");
     } finally {
       setLoading(false);
+      setRedirecting(false);
     }
+  }
+  if (redirecting) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#47b977] mx-auto mb-4"></div>
+          <p className="text-white text-xl">Signing you in...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

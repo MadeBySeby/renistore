@@ -24,7 +24,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const LoadingIndicator = () => <div>Loading...</div>;
+// const LoadingIndicator = () => <div>Loading...</div>;
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -86,9 +86,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     profile,
   };
 
-  if (loading) {
-    return <LoadingIndicator />;
-  }
+  // if (loading) {
+  //   return <LoadingIndicator />;
+  // }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

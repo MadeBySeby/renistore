@@ -45,7 +45,7 @@ export default function Navbar() {
       <h1 className="text-4xl text-primary mask-l-from-0%-500 to-blue-500 font-bold">
         <Link href="/">{t("title")}</Link>
       </h1>
-      <ul>
+      <ul className="gap-3">
         <li>
           {" "}
           <Link href={`/${locale}`}>{t("home")}</Link>
@@ -64,9 +64,9 @@ export default function Navbar() {
         </li>
       </ul>
       <ul>
-        <li>
+        {/* <li>
           <Link href={`/${locale}/cart`}>{t("cart")}</Link>
-        </li>
+        </li> */}
         <li>
           {user ? (
             <>
