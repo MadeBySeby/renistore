@@ -1,10 +1,14 @@
+import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-// solution number 2 if there is volnobility with server ts
-export async function Get() {
+
+export async function GET() {
   const supabase = await createClient();
-  const { data: products, error } = await supabase.from("products").select("*");
+
+  const { data, error } = await supabase.from("products").select("*");
+
   if (error) {
-    throw new Error("Failed to fetch products");
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  return Response.json(products);
+
+  return NextResponse.json(data);
 }
