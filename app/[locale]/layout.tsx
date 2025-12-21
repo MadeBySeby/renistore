@@ -11,6 +11,13 @@ import { AuthProvider } from "../context/AuthContext";
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
+export const metadata = {
+  title: "Reni Store",
+  description: "Georgian E-commerce Platform",
+  themeColor: "#020712",
+  viewport: "width=device-width, initial-scale=1",
+  colorScheme: "dark",
+};
 
 export default async function RootLayout({
   children,
@@ -22,7 +29,7 @@ export default async function RootLayout({
   const { locale } = await params;
   const messages = await getMessages({ locale });
   return (
-    <html lang={locale}>
+    <html lang={locale} className="dark">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta charSet="UTF-8" />

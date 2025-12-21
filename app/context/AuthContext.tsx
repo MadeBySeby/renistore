@@ -8,68 +8,61 @@ import React, {
 } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-
-interface User {
-  token: string;
-  id: string;
-  email: string;
-}
+import { User } from "@supabase/supabase-js";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signIn: (token: string, userData: User) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
 const LoadingIndicator = () => <div>Loading...</div>;
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
+
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/auth/user");
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-          console.log("Navbar user:", data);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+      setLoading(false);
     };
+    getUser();
 
-    fetchUser();
-  }, []);
-
-  const signIn = async (token: string, userData: User) => {
-    try {
-      setUser(userData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const currentUser = session?.user || null;
+      setUser(currentUser);
+      if (currentUser) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", currentUser.id)
+          .single();
+        setIsAdmin(data?.role === "admin");
+      }
+      setLoading(false);
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
 
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
-      router.replace("/login");
       setUser(null);
+      router.replace("/login");
     } catch (error) {
       console.error(error);
     }
@@ -78,8 +71,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const value = {
     user,
     loading,
-    signIn,
     signOut,
+    isAdmin,
   };
 
   if (loading) {

@@ -30,6 +30,12 @@ export default function Navbar() {
   //   }
   //   fetchUser();
   // }, []);
+  const handleSignOut = async () => {
+    await signOut();
+    router.push(`/${locale}/signin`);
+    router.refresh();
+  };
+
   console.log("Navbar user from context:", user);
   const t = useTranslations("nav");
   const locale = useLocale();
@@ -64,13 +70,7 @@ export default function Navbar() {
         <li>
           {user ? (
             <>
-              <button
-                className="cursor-pointer"
-                onClick={async () => {
-                  router.push(`/${locale}/`);
-                  await signOut();
-                  router.refresh();
-                }}>
+              <button className="cursor-pointer" onClick={handleSignOut}>
                 logout
               </button>
             </>

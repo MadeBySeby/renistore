@@ -15,8 +15,8 @@ export default function DashboardLayoutComponent({
   return (
     <>
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-      <div className="flex-1 flex flex-col bg-[radial-gradient(circle_at_top,_#111827_0,_#020712_55%)] text-white min-h-0 ">
-        <p className="p-1 text-red-500">your email: {user.email}</p>
+      <div className="flex-1 flex flex-col text-white min-h-0 ">
+        {/* <p className="p-1 text-red-500">your email: {user.email}</p> */}
         <button
           className="md:hidden p-4 text-2xl"
           onClick={() => setSidebarOpen(!sidebarOpen)}>

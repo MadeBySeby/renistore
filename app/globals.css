@@ -1,8 +1,4 @@
 @import "tailwindcss";
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
 @theme inline {
   --color-background: var(--background);
@@ -15,14 +11,16 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #020712;
-    --foreground: #ededed;
+    /* --foreground: #ededed; */
     --color-primary: #47b977;
   }
 }
-
+html {
+  background-color: #020712;
+}
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: radial-gradient(circle at top, #111827 0%, #020712 55%);
+  color: #ededed;
   --color-primary: #47b977;
 
   font-family: "Poppins", "Noto Sans Georgian", system-ui, -apple-system,

@@ -27,7 +27,7 @@ export default function AiWeightPage() {
   ).toFixed(2);
 
   return (
-    <div className=" sm:px-8 sm:flex-column  sm:items-center md:px-20 lg:px-32 xl:px-40 2xl:px-48 py-8">
+    <div className=" sm:px-0 sm:flex-column  sm:items-center md:px-20 lg:px-32 xl:px-40 2xl:px-48 ">
       შეამოწმე პროდუქტის თვითღირებულება AI-ს დახმარებით
       <section>
         <div className="">AI Weight Page</div>
