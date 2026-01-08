@@ -11,7 +11,6 @@ export default function DashboardLayoutComponent({
   user: any;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <>
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />

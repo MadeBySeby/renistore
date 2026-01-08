@@ -42,9 +42,11 @@ export default function Navbar() {
   return (
     <nav className="flex-wrap flex justify-between items-center p-3 border-b-1 border-gray-800 ">
       <LanguageSwitcher />
+
       <h1 className="text-4xl text-primary mask-l-from-0%-500 to-blue-500 font-bold">
         <Link href="/">{t("title")}</Link>
       </h1>
+
       <ul className="gap-3">
         <li>
           {" "}
@@ -62,11 +64,6 @@ export default function Navbar() {
           {" "}
           <Link href={`/${locale}/contact`}>{t("contact")}</Link>{" "}
         </li>
-      </ul>
-      <ul>
-        {/* <li>
-          <Link href={`/${locale}/cart`}>{t("cart")}</Link>
-        </li> */}
         <li>
           {user ? (
             <>
@@ -97,6 +94,9 @@ export default function Navbar() {
           </Link>
         </li>
       </ul>
+      {/* <li>
+          <Link href={`/${locale}/cart`}>{t("cart")}</Link>
+        </li> */}
     </nav>
   );
 }

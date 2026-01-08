@@ -14,6 +14,8 @@
     "subtitlePart1": "პრემიუმ",
     "subtitlePart2": "სტრიტვეარი",
     "subtitlePart3": "მიწოდება სწრაფად",
+    "aiTagline": "ატვირთე ნებისმიერი პროდუქტი, გაიგე ფასი და გამოიწერე!",
+
     "shopNow": "შოპინგი",
     "newDrops": "ახალი პროდუქცია",
     "features": {
@@ -61,16 +63,18 @@
     "terms": "მომსახურების პირობები"
   },
 
-  "common": {
-    "loading": "იტვირთება...",
-    "error": "შეცდომა დაფიქსირდა",
-    "success": "წარმატებით",
-    "cancel": "გაუქმება"
-  },
   "sidebar": {
     "dashboard": "დეშბორდი",
     "orders": "შეკვეთები",
     "products": "პროდუქტები",
     "aiWeight": "AI წონა"
+  },
+  "utilities": {
+    "estimating": "ფასის შეფასება...",
+    "estimatePrice": "ფასის შეფასება",
+    "delete": "წაშლა",
+    "uploadImage": "სურათის ატვირთვა",
+    "loadingProducts": "იტვირთება...",
+    "noProducts": "პროდუქტი არ არის."
   }
 }

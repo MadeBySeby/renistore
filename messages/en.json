@@ -16,11 +16,15 @@
     "subtitlePart3": "Delivered Fast",
     "shopNow": "Shop Now",
     "newDrops": "New Drops",
+    "aiTagline": "Upload any product, get the price, and order it!",
+
     "features": {
       "quality": "🔥 Quality streetwear we wear ourselves",
       "delivery": "🚚 Products arrive in 7–10 working days",
       "shipping": "📦 Free shipping nationwide"
-    }
+    },
+
+    "estimatePrice": "Estimate Price"
   },
 
   "shop": {
@@ -61,16 +65,18 @@
     "terms": "Terms of Service"
   },
 
-  "common": {
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "success": "Success",
-    "cancel": "Cancel"
-  },
   "sidebar": {
     "dashboard": "Dashboard",
     "orders": "Orders",
     "products": "Products",
     "aiWeight": "AI Weight"
+  },
+  "utilities": {
+    "estimating": "Estimating price...",
+    "estimatePrice": "Estimate Price",
+    "delete": "Delete",
+    "uploadImage": "Upload Image",
+    "loadingProducts": "Loading products...",
+    "noProducts": "No products available."
   }
 }

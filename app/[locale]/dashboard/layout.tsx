@@ -9,15 +9,15 @@ export default async function DashboardLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  // const { locale } = await params;
   const user = await getCurrentUser();
-  if (!user) {
-    redirect(`/${locale}/login`);
-  }
-  const profile = await getUserProfile(user.id);
-  if (profile?.role !== "admin") {
-    redirect(`/${locale}/`);
-  }
+  // if (!user) {
+  //   redirect(`/${locale}/login`);
+  // }
+  // const profile = await getUserProfile(user.id);
+  // if (profile?.role !== "admin") {
+  //   redirect(`/${locale}/`);
+  // }
 
   return (
     <div

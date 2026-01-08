@@ -7,14 +7,26 @@ import Link from "next/link";
 import { getAllProducts } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
 import Snowfall from "react-snowfall";
+interface EstimatedPrice {
+  productPriceGEL: number;
+  shippingGEL: number;
+  totalPriceGEL: number;
+  estimatedWeightKg: number;
+}
 export default function Home() {
   const [image, setImage] = useState<File | null>(null);
   const locale = useLocale();
   const [products, setProducts] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const [estimatedPrice, setEstimatedPrice] = useState<EstimatedPrice | null>(
+    null
+  );
   const t = useTranslations("home");
+  const utilities = useTranslations("utilities");
   useEffect(() => {
+    setLoading(true);
     async function loadProducts() {
       try {
         const data = await getAllProducts();
@@ -31,14 +43,24 @@ export default function Home() {
   }, []);
   async function handleEstimate() {
     if (!image) return;
-    const formData = new FormData();
-    formData.append("image", image);
-    const response = await fetch("/api/estimate-price", {
-      method: "POST",
-      body: formData,
-    });
-    const data = await response.json();
-    console.log(data);
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+      const response = await fetch("/api/ai/estimate", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      const parsed = JSON.parse(data.aiText);
+      setEstimatedPrice(parsed);
+      // console.log(data.productPriceGEL);
+      console.log(estimatedPrice);
+    } catch (err) {
+      console.error("Error estimating price:", err);
+    } finally {
+      setLoading(false);
+    }
   }
   return (
     <>
@@ -86,14 +108,14 @@ export default function Home() {
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
-          ) : loading ? (
-            <p>Loading products...</p>
+          ) : loading && products.length === 0 ? (
+            <p>{utilities("loadingProducts")}</p>
           ) : error ? (
             <p className="text-red-500">Error: {error}</p>
           ) : (
-            <p>No products available.</p>
+            <p>{utilities("noProducts")}</p>
           )}
-          <h2>ატვირთე ნებისმიერი პროდუქტი გაიგე ფასი და გამოიწერე!</h2>
+          <h2>{t("aiTagline")}</h2>
           <div className="relative flex flex-col md:flex-row items-center gap-4">
             <input
               type="file"
@@ -105,25 +127,50 @@ export default function Home() {
               htmlFor="file-upload"
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded cursor-pointer hover:bg-primary/90 transition">
               <BiUpload size={20} />
-              Choose File
+              {utilities("uploadImage")}
             </label>
             {image && (
               <div className="flex flex-col  items-center gap-3">
                 <button
                   className="bg-red-500 text-white px-4 py-2 rounded curpors-pointer hover:bg-red-600 transition"
-                  onClick={() => setImage(null)}>
-                  წაშლა
+                  onClick={() => {
+                    setImage(null);
+                    setEstimatedPrice(null);
+                  }}>
+                  {utilities("delete")}
                 </button>
                 <img
                   width={200}
                   src={URL.createObjectURL(image)}
                   alt={image.name}
                 />
+                {loading && image && <p>{utilities("estimating")}</p>}
                 <button
+                  disabled={loading}
                   onClick={handleEstimate}
                   className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-secondary/90 transition cursor-pointer">
-                  Estimate Price
+                  {utilities("estimatePrice")}
                 </button>
+                {estimatedPrice && (
+                  <ul className="flex flex-col gap-2 mt-4">
+                    <li className="text-sm md:text-base">
+                      <span className="font-semibold">Product price:</span>{" "}
+                      {estimatedPrice?.productPriceGEL} GEL
+                    </li>
+                    <li className="text-sm md:text-base">
+                      <span className="font-semibold">Shipping:</span>{" "}
+                      {estimatedPrice?.shippingGEL} GEL
+                    </li>
+                    <li className="text-sm md:text-base">
+                      <span className="font-semibold">Total price:</span>{" "}
+                      {estimatedPrice?.totalPriceGEL} GEL
+                    </li>
+                    <li className="text-sm md:text-base">
+                      <span className="font-semibold">Estimated weight:</span>{" "}
+                      {estimatedPrice?.estimatedWeightKg} kg
+                    </li>
+                  </ul>
+                )}
               </div>
             )}
           </div>
