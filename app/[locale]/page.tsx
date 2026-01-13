@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { BiUpload } from "react-icons/bi";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import Link from "next/link";
 import { getAllProducts } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
@@ -62,6 +62,7 @@ export default function Home() {
       setLoading(false);
     }
   }
+  const MemoizedProductCard = memo(ProductCard);
   return (
     <>
       <Snowfall color="#82C3D9" />
@@ -105,7 +106,7 @@ export default function Home() {
           {products.length > 0 ? (
             <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
               {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <MemoizedProductCard key={product.id} product={product} />
               ))}
             </div>
           ) : loading && products.length === 0 ? (
