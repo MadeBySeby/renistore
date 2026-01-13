@@ -44,7 +44,7 @@ export default function Navbar() {
       <LanguageSwitcher />
 
       <h1 className="text-4xl text-primary mask-l-from-0%-500 to-blue-500 font-bold">
-        <Link href="/">{t("title")}</Link>
+        <Link href={`/${locale}`}>{t("title")}</Link>
       </h1>
 
       <ul className="gap-3">
@@ -68,11 +68,11 @@ export default function Navbar() {
           {user ? (
             <>
               <button className="cursor-pointer" onClick={handleSignOut}>
-                logout
+                {t("logout")}
               </button>
             </>
           ) : (
-            <Link href={`/${locale}/login`}>login</Link>
+            <Link href={`/${locale}/login`}>{t("login")}</Link>
           )}
         </li>
         <li>

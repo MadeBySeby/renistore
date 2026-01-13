@@ -1,12 +1,14 @@
 {
   "nav": {
-    "title": "რენისტორი",
+    "title": "ReniStore",
     "home": "მთავარი",
     "shop": "მაღაზია",
     "newArrivals": "ახალი კოლექცია",
     "dashboard": "დეშბორდი",
     "contact": "კონტაქტი",
-    "cart": "კალათა"
+    "cart": "კალათა",
+    "login": "შესვლა",
+    "logout": "გამოსვლა"
   },
 
   "home": {

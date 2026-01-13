@@ -20,6 +20,10 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  signIn: (
+    email: string,
+    password: string
+  ) => Promise<{ data: unknown; error: string | null; success: boolean }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -60,6 +64,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log(" profile from data:", data);
         setProfile(data);
         setIsAdmin(data?.role === "admin");
+      } else {
+        // Clear profile and admin status when user signs out
+        setProfile(null);
+        setIsAdmin(false);
       }
       setLoading(false);
     });
@@ -67,12 +75,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       subscription.unsubscribe();
     };
   }, [supabase]);
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.toLocaleLowerCase(),
+        password: password,
+      });
+      if (error) {
+        console.error("Supabase sign-in error:", error.message);
+        return { data: null, error: error.message, success: false };
+      }
 
+      console.log("Supabase sign-in success:", data);
+      return { data, error: null, success: true };
+    } catch (error: any) {
+      console.error(error);
+      return {
+        data: null,
+        error: error?.message || "Sign in failed",
+        success: false,
+      };
+    }
+  };
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
       setUser(null);
-      router.replace("/login");
+      setProfile(null);
+      setIsAdmin(false);
+      router.refresh();
     } catch (error) {
       console.error(error);
     }
@@ -82,6 +113,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user,
     loading,
     signOut,
+    signIn,
     isAdmin,
     profile,
   };

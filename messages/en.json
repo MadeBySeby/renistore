@@ -6,7 +6,9 @@
     "newArrivals": "New Arrivals",
     "dashboard": "Dashboard",
     "contact": "Contact",
-    "cart": "Cart"
+    "cart": "Cart",
+    "login": "Login",
+    "logout": "Logout"
   },
 
   "home": {

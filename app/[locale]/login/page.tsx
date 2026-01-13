@@ -1,14 +1,12 @@
 "use client";
 
-import { signIn } from "@/lib/auth-client";
-import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/app/context/AuthContext";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function SignInPage() {
-  const supabase = createClient();
   const locale = useLocale();
   const router = useRouter();
 
@@ -18,38 +16,50 @@ export default function SignInPage() {
   const [redirecting, setRedirecting] = useState(false);
 
   const [error, setError] = useState("");
+  const { signIn, user, isAdmin, profile, loading: authLoading } = useAuth();
+
+  // Listen for user and profile changes after sign in to redirect
+  useEffect(() => {
+    if (user && redirecting && !authLoading && profile !== undefined) {
+      // Profile has been loaded (even if null), now we can redirect
+      if (isAdmin) {
+        router.push(`/${locale}/dashboard`);
+      } else {
+        router.push(`/${locale}/`);
+      }
+      setRedirecting(false);
+      setLoading(false);
+    }
+  }, [user, isAdmin, profile, redirecting, authLoading, router, locale]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    // try {
-    //   await signIn(email, password);
-    //   // router.push(`/${locale}/dashboard`);
-    //   // router.refresh();
-    // } catch (err: any) {
-    //   console.error("Sign in failed:", err);
-    //   setError(err.message || "Invalid email or password");
-    // } finally {
-    //   setLoading(false);
-    // }
-
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      setRedirecting(true);
-      console.log(data, "Signed in user data");
-      if (error) throw error;
+      const {
+        data,
+        error: signInError,
+        success,
+      } = await signIn(email, password);
 
-      router.push(`/${locale}/dashboard`);
-      router.refresh();
-    } catch (err: any) {
+      console.log(data, "Signed in user data");
+
+      if (signInError || !success) {
+        setError(signInError || "Invalid email or password");
+        setLoading(false);
+        return;
+      }
+
+      // Set redirecting state - useEffect will handle the actual redirect
+      // once user and profile state are updated from onAuthStateChange
+      setRedirecting(true);
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Invalid email or password";
       console.error("Sign in failed:", err);
-      setError(err.message || "Invalid email or password");
-    } finally {
+      setError(errorMessage);
       setLoading(false);
       setRedirecting(false);
     }
@@ -114,7 +124,7 @@ export default function SignInPage() {
         </button>
 
         <p className="text-center text-gray-400 text-sm">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href={`/${locale}/signup`}
             className="text-blue-500 hover:underline">
