@@ -20,10 +20,9 @@ export async function middleware(request: NextRequest) {
   const intlResponse = intlMiddleware(request);
 
   const { user, supabaseResponse } = await updateSession(request);
-
   const isProtectedRoute = pathname.includes("/dashboard");
   const isAuthRoute =
-    pathname.includes("/signin") || pathname.includes("/signup");
+    pathname.includes("/login") || pathname.includes("/signup");
 
   if (isProtectedRoute && !user) {
     const locale = pathname.split("/")[1] || defaultLocale;
