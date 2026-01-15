@@ -17,37 +17,34 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${defaultLocale}`, request.url));
   }
 
-  const intlResponse = intlMiddleware(request);
-
   const { user, supabaseResponse, userRole } = await updateSession(request);
-  const isAdmin = userRole === "admin" || false;
-  const isAdminRoute = pathname.includes("/dashboard");
-  const isProfileRoute = pathname.includes("/profile");
-  const isAuthRoute =
-    pathname.includes("/login") || pathname.includes("/signup");
 
-  if (isAdminRoute && !isAdmin) {
-    const locale = pathname.split("/")[1] || defaultLocale;
-    const url = new URL(
-      user ? `/${locale}/profile` : `/${locale}/`,
-      request.url
-    );
-    return NextResponse.redirect(url);
-  }
-  if (isProfileRoute && !user) {
-    const locale = pathname.split("/")[1] || defaultLocale;
-    const url = new URL(`/${locale}/login`, request.url);
-    return NextResponse.redirect(url);
-  }
+  const locale = pathname.split("/")[1] || defaultLocale;
+
+  const isAdminRoute = pathname.includes(`/${locale}/dashboard`);
+  const isProfileRoute = pathname.includes(`/${locale}/profile`);
+  const isAuthRoute =
+    pathname.includes(`/${locale}/login`) ||
+    pathname.includes(`/${locale}/signup`);
+
+  const isAdmin = userRole === "admin" || false;
 
   if (isAuthRoute && user) {
-    const locale = pathname.split("/")[1] || defaultLocale;
-    const url = new URL(
-      isAdmin ? `/${locale}/dashboard` : `/${locale}/profile`,
-      request.url
-    );
-    return NextResponse.redirect(url);
+    const redirectPath = isAdmin
+      ? `/${locale}/dashboard`
+      : `/${locale}/profile`;
+    return NextResponse.redirect(new URL(redirectPath, request.url));
   }
+
+  if (isProfileRoute && !user) {
+    return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
+  }
+  if (isAdminRoute && !isAdmin) {
+    const redirectPath = user ? `/${locale}/profile` : `/${locale}/login`;
+    return NextResponse.redirect(new URL(redirectPath, request.url));
+  }
+
+  const intlResponse = intlMiddleware(request);
 
   if (intlResponse) {
     intlResponse.headers.forEach((value, key) => {

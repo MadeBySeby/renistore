@@ -78,7 +78,10 @@ export default function Navbar() {
           )}
         </li>
         <li>
-          <Link href={`/${locale}/dashboard`}>
+          <Link
+            href={
+              user && !isAdmin ? `/${locale}/profile` : `/${locale}/dashboard`
+            }>
             {" "}
             <FiUser />
           </Link>

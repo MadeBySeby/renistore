@@ -32,8 +32,9 @@ export async function updateSession(request: NextRequest) {
   );
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
+  const user = session?.user || null;
   let userRole = null;
   if (user) {
     const { data: profile } = await supabase
@@ -42,7 +43,7 @@ export async function updateSession(request: NextRequest) {
       .eq("id", user.id)
       .single();
 
-    userRole = profile?.role;
+    userRole = profile?.role || null;
   }
   return { user, userRole, supabaseResponse };
 }
