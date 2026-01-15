@@ -42,7 +42,7 @@ export async function updateSession(request: NextRequest) {
       .eq("id", user.id)
       .single();
 
-    userRole = profile?.role;
+    userRole = profile?.role || null;
   }
   return { user, userRole, supabaseResponse };
 }
