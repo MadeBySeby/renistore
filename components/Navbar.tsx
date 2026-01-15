@@ -36,9 +36,9 @@ export default function Navbar() {
     router.refresh();
   };
 
-  console.log("Navbar user from context:", user);
-  console.log("Navbar session from context:", session);
-  console.log("Is Admin:", isAdmin);
+  // console.log("Navbar user from context:", user);
+  // console.log("Navbar session from context:", session);
+  // console.log("Is Admin:", isAdmin);
   const t = useTranslations("nav");
   const locale = useLocale();
   return (
