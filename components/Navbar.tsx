@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 
 export default function Navbar() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, session, isAdmin } = useAuth();
   const router = useRouter();
   // const [user, setUser] = useState<any>(null);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -37,6 +37,8 @@ export default function Navbar() {
   };
 
   console.log("Navbar user from context:", user);
+  console.log("Navbar session from context:", session);
+  console.log("Is Admin:", isAdmin);
   const t = useTranslations("nav");
   const locale = useLocale();
   return (

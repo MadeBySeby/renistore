@@ -21,7 +21,7 @@ export default function Page() {
     setLoading(true);
 
     try {
-      const { data, error } = await signUpWithEmail(email, password);
+      const { data, error } = await signUpWithEmail(email, password, name);
       if (error) throw error;
       console.log(data);
       router.push(`/${locale}/login`);

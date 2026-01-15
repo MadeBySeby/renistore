@@ -19,6 +19,7 @@ interface AuthContextType {
   profile?: Profile | null;
   user: User | null;
   loading: boolean;
+  session: any;
   signOut: () => Promise<void>;
   signIn: (
     email: string,
@@ -36,7 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-
+  const [session, setSession] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -55,6 +56,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const currentUser = session?.user || null;
       setUser(currentUser);
+      setSession(session);
       if (currentUser) {
         const { data } = await supabase
           .from("profiles")
@@ -116,6 +118,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     signIn,
     isAdmin,
     profile,
+    session,
   };
 
   // if (loading) {

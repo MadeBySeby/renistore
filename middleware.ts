@@ -19,20 +19,24 @@ export async function middleware(request: NextRequest) {
 
   const intlResponse = intlMiddleware(request);
 
-  const { user, supabaseResponse } = await updateSession(request);
+  const { user, supabaseResponse, userRole } = await updateSession(request);
+  const isAdmin = userRole === "admin" || false;
   const isProtectedRoute = pathname.includes("/dashboard");
   const isAuthRoute =
     pathname.includes("/login") || pathname.includes("/signup");
-
-  if (isProtectedRoute && !user) {
+  console.log("Middleware - User:", user);
+  if (isProtectedRoute && !isAdmin) {
     const locale = pathname.split("/")[1] || defaultLocale;
-    const url = new URL(`/${locale}/login`, request.url);
+    const url = new URL(`/${locale}/`, request.url);
     return NextResponse.redirect(url);
   }
 
   if (isAuthRoute && user) {
     const locale = pathname.split("/")[1] || defaultLocale;
-    const url = new URL(`/${locale}/dashboard`, request.url);
+    const url = new URL(
+      isAdmin ? `/${locale}/dashboard` : `/${locale}/`,
+      request.url
+    );
     return NextResponse.redirect(url);
   }
 

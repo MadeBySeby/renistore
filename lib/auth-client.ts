@@ -3,17 +3,17 @@ import { createClient } from "./supabase/client";
 const supabase = createClient();
 export async function signUpWithEmail(
   email: string,
-  password: string
-  // name: string
+  password: string,
+  name: string
 ) {
   const { data, error } = await supabase.auth.signUp({
     email: email.toLowerCase(),
     password: password,
-    // options: {
-    //   data: {
-    //     name: name.trim(),
-    //   },
-    // } as Record<string, any>,
+    options: {
+      data: {
+        name: name.trim(),
+      },
+    } as Record<string, any>,
   });
   console.log("SignUp data:", data);
   console.log("SignUp error:", error);
