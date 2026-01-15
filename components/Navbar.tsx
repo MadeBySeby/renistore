@@ -80,19 +80,7 @@ export default function Navbar() {
         <li>
           <Link href={`/${locale}/dashboard`}>
             {" "}
-            <FiUser
-              onPointerOver={() => setShowUserDropdown(true)}
-              onPointerOut={() => setShowUserDropdown(false)}
-            />
-            {showUserDropdown && user && (
-              <div
-                className=" absolute right-0 text-primary bg-white border mt-2 p-2 rounded shadow-lg"
-                onPointerOver={() => setShowUserDropdown(true)}
-                onPointerOut={() => setShowUserDropdown(false)}>
-                {/* User dropdown content */}
-                {user.email}
-              </div>
-            )}
+            <FiUser />
           </Link>
         </li>
       </ul>
