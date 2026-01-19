@@ -9,7 +9,7 @@ import React, {
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
-
+import { useLocale } from "next-intl";
 interface Profile {
   name?: string;
   role: "user" | "admin";
@@ -23,7 +23,7 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   signIn: (
     email: string,
-    password: string
+    password: string,
   ) => Promise<{ data: unknown; error: string | null; success: boolean }>;
 }
 
@@ -32,6 +32,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // const LoadingIndicator = () => <div>Loading...</div>;
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const locale = useLocale();
+
   const router = useRouter();
   const supabase = createClient();
 
@@ -89,6 +91,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       console.log("Supabase sign-in success:", data);
+      router.refresh();
+      router.push(`/en/`);
+
       return { data, error: null, success: true };
     } catch (error: any) {
       console.error(error);
@@ -106,6 +111,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setProfile(null);
       setIsAdmin(false);
       router.refresh();
+      router.push(`/en/`);
     } catch (error) {
       console.error(error);
     }
