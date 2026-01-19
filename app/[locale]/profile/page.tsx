@@ -1,6 +1,7 @@
 "use client";
 import { useAuth } from "@/app/context/AuthContext";
 import { createClient } from "@/lib/supabase/client";
+import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 function page() {
   const { user, profile } = useAuth();
@@ -8,6 +9,9 @@ function page() {
   console.log("Profile Page - User:", user);
   const [modal, setModal] = useState(false);
   const [name, setName] = useState("");
+  if (!user) {
+    redirect("/login");
+  }
   useEffect(() => {
     if (profile?.name) {
       setName(profile.name);

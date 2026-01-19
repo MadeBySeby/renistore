@@ -39,9 +39,9 @@ export async function middleware(request: NextRequest) {
   if (isProfileRoute && !user) {
     return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
   }
-
-  if (isAdminRoute && user && !isAdmin) {
-    return NextResponse.redirect(new URL(`/${locale}/profile`, request.url));
+  if (isAdminRoute && !isAdmin) {
+    const redirectPath = user ? `/${locale}/profile` : `/${locale}/login`;
+    return NextResponse.redirect(new URL(redirectPath, request.url));
   }
 
   const intlResponse = intlMiddleware(request);
