@@ -30,8 +30,8 @@ export default function SignInPage() {
       // } else {
       //   router.push(`/${locale}/`);
       // }
-      // router.refresh();
-      // router.push(redirectPath);
+      router.refresh();
+      router.push(redirectPath);
       // window.location.href = redirectPath;
       setRedirecting(false);
       setLoading(false);

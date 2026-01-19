@@ -45,11 +45,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const getUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-      setLoading(false);
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (e) {
+        console.error("Failed to get user", e);
+      } finally {
+        setLoading(false); // Ensure this runs!
+      }
     };
     getUser();
 
@@ -92,7 +97,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       console.log("Supabase sign-in success:", data);
       router.refresh();
-      router.push(`/en/`);
+      router.push(`/${locale}/`);
 
       return { data, error: null, success: true };
     } catch (error: any) {
@@ -111,7 +116,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setProfile(null);
       setIsAdmin(false);
       router.refresh();
-      router.push(`/en/`);
+      router.push(`/${locale}/`);
     } catch (error) {
       console.error(error);
     }
