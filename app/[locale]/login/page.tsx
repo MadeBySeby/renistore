@@ -22,7 +22,9 @@ export default function SignInPage() {
   useEffect(() => {
     if (user && redirecting && !authLoading && profile !== undefined) {
       // Profile has been loaded (even if null), now we can redirect
-      const redirectPath = isAdmin ? `/${locale}/dashboard` : `/${locale}/`;
+      const redirectPath = isAdmin
+        ? `/${locale}/dashboard`
+        : `/${locale}/profile`;
       // if (isAdmin) {
       //   router.push(`/${locale}/dashboard`);
       // } else {
