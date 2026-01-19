@@ -18,15 +18,16 @@ export default function Home() {
   const locale = useLocale();
   const [products, setProducts] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [loadingEstimate, setLoadingEstimate] = useState(false);
 
   const [estimatedPrice, setEstimatedPrice] = useState<EstimatedPrice | null>(
-    null
+    null,
   );
   const t = useTranslations("home");
   const utilities = useTranslations("utilities");
   useEffect(() => {
-    setLoading(true);
+    setLoadingProducts(true);
     async function loadProducts() {
       try {
         const data = await getAllProducts();
@@ -35,7 +36,7 @@ export default function Home() {
       } catch (err: any) {
         setError(err.message);
       } finally {
-        setLoading(false);
+        setLoadingProducts(false);
       }
       console.log(products);
     }
@@ -43,7 +44,7 @@ export default function Home() {
   }, []);
   async function handleEstimate() {
     if (!image) return;
-    setLoading(true);
+    setLoadingEstimate(true);
     try {
       const formData = new FormData();
       formData.append("image", image);
@@ -59,7 +60,7 @@ export default function Home() {
     } catch (err) {
       console.error("Error estimating price:", err);
     } finally {
-      setLoading(false);
+      setLoadingEstimate(false);
     }
   }
   const MemoizedProductCard = memo(ProductCard);
@@ -109,7 +110,7 @@ export default function Home() {
                 <MemoizedProductCard key={product.id} product={product} />
               ))}
             </div>
-          ) : loading && products.length === 0 ? (
+          ) : loadingProducts ? (
             <p>{utilities("loadingProducts")}</p>
           ) : error ? (
             <p className="text-red-500">Error: {error}</p>
@@ -145,9 +146,9 @@ export default function Home() {
                   src={URL.createObjectURL(image)}
                   alt={image.name}
                 />
-                {loading && image && <p>{utilities("estimating")}</p>}
+                {loadingEstimate && image && <p>{utilities("estimating")}</p>}
                 <button
-                  disabled={loading}
+                  disabled={loadingEstimate}
                   onClick={handleEstimate}
                   className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-secondary/90 transition cursor-pointer">
                   {utilities("estimatePrice")}

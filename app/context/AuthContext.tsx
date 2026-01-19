@@ -44,20 +44,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const getUser = async () => {
+    const initializeAuth = async () => {
       try {
         const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        setUser(user);
-      } catch (e) {
-        console.error("Failed to get user", e);
+          data: { session },
+        } = await supabase.auth.getSession();
+        const currentUser = session?.user || null;
+        setUser(currentUser);
+        setSession(session);
+        if (currentUser) {
+          const { data } = await supabase
+            .from("profiles")
+            .select("name, role")
+            .eq("id", currentUser.id)
+            .single();
+          console.log(" profile from data:", data);
+          setProfile(data);
+          setIsAdmin(data?.role === "admin");
+        }
+      } catch (error) {
+        console.error("Error initializing auth:", error);
       } finally {
-        setLoading(false); // Ensure this runs!
+        setLoading(false);
       }
     };
-    getUser();
-
+    initializeAuth();
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -74,11 +85,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setProfile(data);
         setIsAdmin(data?.role === "admin");
       } else {
-        // Clear profile and admin status when user signs out
         setProfile(null);
         setIsAdmin(false);
       }
-      setLoading(false);
     });
     return () => {
       subscription.unsubscribe();
