@@ -58,8 +58,6 @@ export default function SignInPage() {
         return;
       }
 
-      // Set redirecting state - useEffect will handle the actual redirect
-      // once user and profile state are updated from onAuthStateChange
       setRedirecting(true);
     } catch (err: unknown) {
       const errorMessage =

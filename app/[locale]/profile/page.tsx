@@ -1,16 +1,18 @@
 "use client";
 import { useAuth } from "@/app/context/AuthContext";
 import { createClient } from "@/lib/supabase/client";
+import { useLocale } from "next-intl";
 import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 function page() {
-  const { user, profile } = useAuth();
+  const { user, profile, loading } = useAuth();
   const supabase = createClient();
+  const locale = useLocale();
   console.log("Profile Page - User:", user);
   const [modal, setModal] = useState(false);
   const [name, setName] = useState("");
-  if (!user) {
-    redirect("/login");
+  if (!user && !loading) {
+    redirect(`/${locale}/login`);
   }
   useEffect(() => {
     if (profile?.name) {

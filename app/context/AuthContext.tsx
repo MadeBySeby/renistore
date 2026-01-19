@@ -7,7 +7,7 @@ import React, {
   ReactNode,
 } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 import { useLocale } from "next-intl";
 interface Profile {
@@ -24,7 +24,11 @@ interface AuthContextType {
   signIn: (
     email: string,
     password: string,
-  ) => Promise<{ data: unknown; error: string | null; success: boolean }>;
+  ) => Promise<{
+    data: unknown;
+    error: string | null;
+    success: boolean | null;
+  }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
