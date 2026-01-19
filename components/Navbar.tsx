@@ -32,8 +32,8 @@ export default function Navbar() {
   // }, []);
   const handleSignOut = async () => {
     await signOut();
-    router.refresh();
     router.push(`/${locale}/login`);
+    router.refresh();
   };
 
   // console.log("Navbar user from context:", user);
