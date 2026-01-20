@@ -46,10 +46,23 @@
   "contact": {
     "title": "დაგვიკავშირდით",
     "subtitle": "კითხვა გაქვთ? მოგვწერეთ",
+    "name": "სახელი",
+    "namePlaceholder": "თქვენი სახელი",
     "email": "ელფოსტა",
+    "emailPlaceholder": "your@email.com",
     "phone": "ტელეფონი",
     "message": "შეტყობინება",
-    "send": "გაგზავნა"
+    "messagePlaceholder": "თქვენი შეტყობინება...",
+    "send": "გაგზავნა",
+    "sending": "იგზავნება...",
+    "sent": "გაიგზავნა!",
+    "location": "მდებარეობა",
+    "followUs": "გამოგვყევით",
+    "workingHours": "სამუშაო საათები",
+    "mondayFriday": "ორშაბათი - პარასკევი",
+    "saturday": "შაბათი",
+    "sunday": "კვირა",
+    "closed": "დახურულია"
   },
 
   "cart": {

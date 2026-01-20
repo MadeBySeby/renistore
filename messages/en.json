@@ -48,10 +48,23 @@
   "contact": {
     "title": "Contact Us",
     "subtitle": "Have a question? Get in touch with us",
+    "name": "Name",
+    "namePlaceholder": "Your name",
     "email": "Email",
+    "emailPlaceholder": "your@email.com",
     "phone": "Phone",
     "message": "Message",
-    "send": "Send Message"
+    "messagePlaceholder": "Your message...",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "sent": "Sent!",
+    "location": "Location",
+    "followUs": "Follow Us",
+    "workingHours": "Working Hours",
+    "mondayFriday": "Monday - Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "closed": "Closed"
   },
 
   "cart": {
