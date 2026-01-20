@@ -28,7 +28,7 @@ export default function ShopPage() {
       }
     };
     fetchProducts();
-  }, [search, supabase]);
+  }, [search]);
   const MemorizedProducts = memo(ProductCard);
   return (
     <div className="min-h-screen w-full flex flex-col gap-4  p-6">

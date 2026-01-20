@@ -67,7 +67,7 @@ export default function Navbar() {
           <Link href={`/${locale}/contact`}>{t("contact")}</Link>{" "}
         </li>
         <li>
-          {session ? (
+          {user ? (
             <>
               <button className="cursor-pointer" onClick={handleSignOut}>
                 {t("logout")}

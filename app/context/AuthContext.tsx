@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { redirect, useRouter } from "next/navigation";
-import { User } from "@supabase/supabase-js";
+import { User, AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { useLocale } from "next-intl";
 interface Profile {
   name?: string;
@@ -75,28 +75,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     initializeAuth();
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const currentUser = session?.user || null;
-      setUser(currentUser);
-      setSession(session);
-      if (currentUser) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("name, role")
-          .eq("id", currentUser.id)
-          .single();
-        console.log(" profile from data:", data);
-        setProfile(data);
-        setIsAdmin(data?.role === "admin");
-      } else {
-        setProfile(null);
-        setIsAdmin(false);
-      }
-    });
+    } = supabase.auth.onAuthStateChange(
+      async (_event: AuthChangeEvent, session: Session | null) => {
+        const currentUser = session?.user || null;
+        setUser(currentUser);
+        setSession(session);
+        if (currentUser) {
+          const { data } = await supabase
+            .from("profiles")
+            .select("name, role")
+            .eq("id", currentUser.id)
+            .single();
+          console.log(" profile from data:", data);
+          setProfile(data);
+          setIsAdmin(data?.role === "admin");
+        } else {
+          setProfile(null);
+          setIsAdmin(false);
+        }
+      },
+    );
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, []);
   const signIn = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({

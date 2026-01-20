@@ -31,8 +31,8 @@ export default function Home() {
     async function loadProducts() {
       try {
         const data = await getAllProducts();
-        if (error) throw error;
         setProducts(data || []);
+        setError(null);
       } catch (err: any) {
         setError(err.message);
       } finally {
