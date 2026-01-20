@@ -44,7 +44,7 @@ function ProductCard({
       <Link
         key={product.id}
         className="bg-gray-800 p-4 rounded-lg flex flex-col items-center cursor-pointer hover:scale-105 transition-transform duration-150"
-        href={`${locale}/product/${product.slug}`}>
+        href={`/${locale}/product/${product.slug}`}>
         <img
           src={product.image_url}
           alt={product.name}

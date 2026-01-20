@@ -16,11 +16,18 @@ export default function SignInPage() {
   const [redirecting, setRedirecting] = useState(false);
 
   const [error, setError] = useState("");
-  const { signIn, user, isAdmin, profile, loading: authLoading } = useAuth();
+  const {
+    signIn,
+    user,
+    isAdmin,
+    session,
+    profile,
+    loading: authLoading,
+  } = useAuth();
 
   // Listen for user and profile changes after sign in to redirect
   useEffect(() => {
-    if (user && redirecting && !authLoading && profile !== undefined) {
+    if (session && redirecting && !authLoading && profile !== undefined) {
       // Profile has been loaded (even if null), now we can redirect
       const redirectPath = isAdmin
         ? `/${locale}/dashboard`
@@ -122,9 +129,9 @@ export default function SignInPage() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || session !== null}
           className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50">
-          {loading ? "Signing in..." : "Sign In"}
+          {loading ? "Signing in..." : session ? "redirecting..." : "Sign In"}
         </button>
 
         <p className="text-center text-gray-400 text-sm">

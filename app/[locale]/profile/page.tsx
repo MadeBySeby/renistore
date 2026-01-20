@@ -8,7 +8,7 @@ function page() {
   const { user, profile, loading } = useAuth();
   const supabase = createClient();
   const locale = useLocale();
-  console.log("Profile Page - User:", user);
+  // console.log("Profile Page - User:", user);
   const [modal, setModal] = useState(false);
   const [name, setName] = useState("");
   if (!user && !loading) {
