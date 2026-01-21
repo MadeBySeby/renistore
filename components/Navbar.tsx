@@ -7,6 +7,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
+import { IconBase } from "react-icons";
+import { BiMenu } from "react-icons/bi";
 
 export default function Navbar() {
   const { user, signOut, session, isAdmin } = useAuth();
@@ -41,6 +43,7 @@ export default function Navbar() {
   // console.log("Is Admin:", isAdmin);
   const t = useTranslations("nav");
   const locale = useLocale();
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <nav className="flex-wrap flex justify-between items-center p-3 border-b-1 border-gray-800 ">
       <LanguageSwitcher />
@@ -50,19 +53,41 @@ export default function Navbar() {
       </h1>
 
       <ul className="gap-3">
+        <li className="md:hidden">
+          <BiMenu
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-2xl cursor-pointer"
+          />
+        </li>
+        <li className="w-full">
+          <div
+            className={`absolute left-5 mt-5 z-10 flex flex-col gap-3 transition-all duration-300 ${
+              menuOpen ? "max-h-96" : "max-h-0 md:max-h-full"
+            } overflow-hidden md:overflow-visible`}>
+            <ul className="flex flex-col gap-3">
+              <li>
+                <Link href={`/${locale}/cart`}>{t("cart")}</Link>
+              </li>
+              <li>
+                <Link href={`/${locale}/shop`}>{t("shop")}</Link>
+              </li>
+            </ul>
+          </div>
+        </li>
+
         <li>
           {" "}
           <Link href={`/${locale}`}>{t("home")}</Link>
         </li>
-        <li>
+        <li className="hidden md:block">
           {" "}
           <Link href={`/${locale}/shop`}>{t("shop")}</Link>{" "}
         </li>
         <li>
           {" "}
-          <Link href={`/${locale}/new-arrivals`}>{t("newArrivals")}</Link>{" "}
+          {/* <Link href={`/${locale}/new-arrivals`}>{t("newArrivals")}</Link>{" "} */}
         </li>
-        <li>
+        <li className="hidden md:block">
           {" "}
           <Link href={`/${locale}/contact`}>{t("contact")}</Link>{" "}
         </li>

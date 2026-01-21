@@ -32,7 +32,7 @@ function page() {
     setModal(false);
   }
   return (
-    <div className="min-h-screen bg-gray-900 p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-xl mx-auto bg-gray-800 rounded-lg shadow-lg p-8">
         <h1 className="text-2xl font-bold text-white mb-6">Profile</h1>
         <div className="space-y-4">
