@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 export async function POST(request: Request) {
-  const resend = new Resend(process.env.RESEND_API_KEY!);
-  const { name, email, message } = await request.json();
-
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY!);
+    const { name, email, message } = await request.json();
     await resend.emails.send({
       from: "ReniStore <onboarding@resend.dev>",
       to: `david.sebiskveradze.1@btu.edu.ge`,
