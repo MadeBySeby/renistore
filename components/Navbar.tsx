@@ -66,7 +66,7 @@ export default function Navbar() {
             } overflow-hidden md:overflow-visible`}>
             <ul className="flex flex-col gap-3">
               <li>
-                <Link href={`/${locale}/cart`}>{t("cart")}</Link>
+                <Link href={`/${locale}/contact`}>{t("contact")}</Link>
               </li>
               <li>
                 <Link href={`/${locale}/shop`}>{t("shop")}</Link>
