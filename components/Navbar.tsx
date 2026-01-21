@@ -61,7 +61,7 @@ export default function Navbar() {
         </li>
         <li className="w-full">
           <div
-            className={`absolute left-5 mt-5 z-10 flex flex-col gap-3 transition-all duration-300 ${
+            className={`absolute left-5 mt-5 z-10 flex flex-col md:hidden gap-3 transition-all duration-300 ${
               menuOpen ? "max-h-96" : "max-h-0 md:max-h-full"
             } overflow-hidden md:overflow-visible`}>
             <ul className="flex flex-col gap-3">
