@@ -38,20 +38,18 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-[80vh] py-12 px-4">
+    <div className="min-h-[80vh] py-6 sm:py-12 px-2 sm:px-4">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
             {t("title")}
           </h1>
-          <p className="text-gray-400 text-lg">{t("subtitle")}</p>
+          <p className="text-gray-400 text-sm sm:text-lg">{t("subtitle")}</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12">
-          {/* Contact Form */}
-          <div className="bg-gray-800/50  backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50">
-            <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid md:grid-cols-2 gap-6 sm:gap-12">
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-8 border border-gray-700/50">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="flex flex-col space-y-2">
                 <label
                   htmlFor="name"
@@ -59,7 +57,7 @@ export default function ContactPage() {
                   {t("name")}
                 </label>
                 <input
-                  className="px-4 py-3 border border-gray-600 bg-gray-700/50 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  className="px-3 sm:px-4 py-2 sm:py-3 border border-gray-600 bg-gray-700/50 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm sm:text-base"
                   type="text"
                   id="name"
                   value={name}
@@ -76,7 +74,7 @@ export default function ContactPage() {
                   {t("email")}
                 </label>
                 <input
-                  className="px-4 py-3 border border-gray-600 bg-gray-700/50 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  className="px-3 sm:px-4 py-2 sm:py-3 border border-gray-600 bg-gray-700/50 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm sm:text-base"
                   type="email"
                   id="email"
                   value={email}
@@ -93,7 +91,7 @@ export default function ContactPage() {
                   {t("message")}
                 </label>
                 <textarea
-                  className="px-4 py-3 border border-gray-600 bg-gray-700/50 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
+                  className="px-3 sm:px-4 py-2 sm:py-3 border border-gray-600 bg-gray-700/50 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none text-sm sm:text-base"
                   id="message"
                   rows={5}
                   value={message}
@@ -106,7 +104,7 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={loading || success}
-                className="w-full bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 group">
+                className="w-full bg-primary text-white py-2 sm:py-3 px-4 sm:px-6 rounded-lg font-medium hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 group text-sm sm:text-base">
                 {success ? (
                   <>
                     <FiCheck className="w-5 h-5" />
@@ -128,60 +126,70 @@ export default function ContactPage() {
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {/* Info Cards */}
-            <div className="space-y-4">
-              <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700/30 flex items-center gap-4 hover:border-primary/50 transition-colors">
-                <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                  <FiMail className="w-5 h-5 text-primary" />
+            <div className="space-y-3 sm:space-y-4">
+              <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-gray-700/30 flex items-center gap-3 sm:gap-4 hover:border-primary/50 transition-colors">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                  <FiMail className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 </div>
-                <div>
-                  <h3 className="text-sm text-gray-400">{t("email")}</h3>
-                  <p className="text-white font-medium">
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-xs sm:text-sm text-gray-400">
+                    {t("email")}
+                  </h3>
+                  <p className="text-white font-medium text-sm sm:text-base break-all">
                     sebiskveradzed@gmail.com
                   </p>
                 </div>
               </div>
 
-              <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700/30 flex items-center gap-4 hover:border-primary/50 transition-colors">
-                <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                  <FiPhone className="w-5 h-5 text-primary" />
+              <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-gray-700/30 flex items-center gap-3 sm:gap-4 hover:border-primary/50 transition-colors">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                  <FiPhone className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 </div>
-                <div>
-                  <h3 className="text-sm text-gray-400">{t("phone")}</h3>
-                  <p className="text-white font-medium">+995 558 200 609</p>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-xs sm:text-sm text-gray-400">
+                    {t("phone")}
+                  </h3>
+                  <p className="text-white font-medium text-sm sm:text-base">
+                    +995 558 200 609
+                  </p>
                 </div>
               </div>
 
-              <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700/30 flex items-center gap-4 hover:border-primary/50 transition-colors">
-                <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                  <FiMapPin className="w-5 h-5 text-primary" />
+              <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-gray-700/30 flex items-center gap-3 sm:gap-4 hover:border-primary/50 transition-colors">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                  <FiMapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 </div>
-                <div>
-                  <h3 className="text-sm text-gray-400">{t("location")}</h3>
-                  <p className="text-white font-medium">Tbilisi, Georgia</p>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-xs sm:text-sm text-gray-400">
+                    {t("location")}
+                  </h3>
+                  <p className="text-white font-medium text-sm sm:text-base">
+                    Tbilisi, Georgia
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700/30">
-              <h3 className="text-lg font-semibold text-white mb-4">
+            <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-gray-700/30">
+              <h3 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4">
                 {t("followUs")}
               </h3>
-              <div className="flex gap-4">
+              <div className="flex gap-3 sm:gap-4">
                 <a
                   href="https://instagram.com/reni_store.ge"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 rounded-full flex items-center justify-center hover:scale-110 transition-transform">
-                  <FaInstagram className="w-6 h-6 text-white" />
+                  className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+                  <FaInstagram className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </a>
                 <a
                   href="https://tiktok.com/reni__istore"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-black rounded-full flex items-center justify-center hover:scale-110 transition-transform border border-gray-700">
-                  <FaTiktok className="w-5 h-5 text-white" />
+                  className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-full flex items-center justify-center hover:scale-110 transition-transform border border-gray-700">
+                  <FaTiktok className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </a>
                 {/* <a
                   href="https://facebook.com"
@@ -193,22 +201,22 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700/30">
-              <h3 className="text-lg font-semibold text-white mb-4">
+            <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-gray-700/30">
+              <h3 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4">
                 {t("workingHours")}
               </h3>
-              <div className="space-y-2 text-gray-300">
-                <div className="flex justify-between">
-                  <span>{t("mondayFriday")}</span>
-                  <span className="text-white">10:00 - 20:00</span>
+              <div className="space-y-2 text-gray-300 text-sm sm:text-base">
+                <div className="flex justify-between gap-2">
+                  <span className="flex-shrink-0">{t("mondayFriday")}</span>
+                  <span className="text-white text-right">10:00 - 20:00</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>{t("saturday")}</span>
-                  <span className="text-white">11:00 - 18:00</span>
+                <div className="flex justify-between gap-2">
+                  <span className="flex-shrink-0">{t("saturday")}</span>
+                  <span className="text-white text-right">11:00 - 18:00</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>{t("sunday")}</span>
-                  <span className="text-primary">{t("closed")}</span>
+                <div className="flex justify-between gap-2">
+                  <span className="flex-shrink-0">{t("sunday")}</span>
+                  <span className="text-primary text-right">{t("closed")}</span>
                 </div>
               </div>
             </div>
