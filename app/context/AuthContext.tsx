@@ -16,7 +16,7 @@ interface Profile {
 }
 interface AuthContextType {
   isAdmin?: boolean;
-  profile?: Profile | null;
+  profile?: Profile | null | undefined;
   user: User | null;
   loading: boolean;
   session: any;
@@ -39,10 +39,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const locale = useLocale();
 
   const router = useRouter();
-  const supabase = createClient();
+  const [supabase] = useState(() => createClient());
 
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<Profile | null | undefined>(undefined);
   const [session, setSession] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -63,8 +63,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             .eq("id", currentUser.id)
             .single();
           console.log(" profile from data:", data);
-          setProfile(data);
+          setProfile(data || null);
           setIsAdmin(data?.role === "admin");
+        } else {
+          setProfile(null);
         }
       } catch (error) {
         console.error("Error initializing auth:", error);
@@ -87,7 +89,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             .eq("id", currentUser.id)
             .single();
           console.log(" profile from data:", data);
-          setProfile(data);
+          setProfile(data || null);
           setIsAdmin(data?.role === "admin");
         } else {
           setProfile(null);
@@ -111,9 +113,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       console.log("Supabase sign-in success:", data);
-      router.refresh();
-      router.push(`/${locale}/`);
-
+      // Wait for login page useEffect to handle redirect to correct dashboard
+      
       return { data, error: null, success: true };
     } catch (error: any) {
       console.error(error);
