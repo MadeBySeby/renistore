@@ -1,4 +1,5 @@
 import { getProductBySlug } from "@/lib/products";
+import Link from "next/link";
 import { IoCart } from "react-icons/io5";
 
 export default async function ProductPage({
@@ -11,25 +12,32 @@ export default async function ProductPage({
   const product = await getProductBySlug(slug);
 
   if (!product) {
-    return <div>Product not found</div>;
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4 text-center">
+        <p className="text-xl text-gray-300">Product not found.</p>
+        <Link
+          href={`/${locale}/shop`}
+          className="rounded-md bg-primary px-5 py-2.5 font-semibold text-white transition hover:bg-primary/90">
+          Back to shop
+        </Link>
+      </div>
+    );
   }
 
   return (
-    <div className="w-full flex p-5 gap-5 ">
-      <div>
-        <img
-          className="border-primary rounded-2xl "
-          width="500"
-          src={product.image_url}
-          alt={product.name}
-        />
+    <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-8 md:grid-cols-2 md:gap-12 md:px-8 md:py-12">
+      <div className="overflow-hidden rounded-2xl border border-gray-800 bg-gray-950">
+        {product.image_url && (
+          <img className="aspect-square w-full object-cover" src={product.image_url} alt={product.name} />
+        )}
       </div>
-      <div className="flex flex-col ">
-        <h1 className="text-primary">Product Name: {product.name}</h1>
-        <div>Product Price: {product.price}</div>
-        <button className=" bg-primary   text-white px-4 py-2 rounded hover:bg-primary/90 transition mt-5 w-fit">
+      <div className="flex flex-col gap-5">
+        <h1 className="text-3xl font-bold md:text-4xl">{product.name}</h1>
+        <p className="text-2xl font-bold text-primary">{Number(product.price).toFixed(2)} ₾</p>
+        {product.description && <p className="leading-relaxed text-gray-300">{product.description}</p>}
+        <button className="mt-2 inline-flex w-fit cursor-pointer items-center gap-2 rounded-md bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary/90 active:scale-95">
           Add to Cart
-          <IoCart className=" inline ml-2 text-2xl text-white cursor-pointer" />
+          <IoCart className="text-xl" />
         </button>
       </div>
     </div>

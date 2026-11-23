@@ -2,49 +2,58 @@
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { BiUpload } from "react-icons/bi";
-import { useEffect, useState, memo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { getAllProducts } from "@/lib/products";
+import { getAllProducts, type Product } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
 import Snowfall from "react-snowfall";
+
 interface EstimatedPrice {
   productPriceGEL: number;
   shippingGEL: number;
   totalPriceGEL: number;
   estimatedWeightKg: number;
 }
+
 export default function Home() {
   const [image, setImage] = useState<File | null>(null);
   const locale = useLocale();
-  const [products, setProducts] = useState<any[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loadError, setLoadError] = useState(false);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingEstimate, setLoadingEstimate] = useState(false);
-
-  const [estimatedPrice, setEstimatedPrice] = useState<EstimatedPrice | null>(
-    null,
-  );
+  const [estimateError, setEstimateError] = useState(false);
+  const [estimatedPrice, setEstimatedPrice] = useState<EstimatedPrice | null>(null);
   const t = useTranslations("home");
   const utilities = useTranslations("utilities");
+
+  const previewUrl = useMemo(() => (image ? URL.createObjectURL(image) : null), [image]);
   useEffect(() => {
-    setLoadingProducts(true);
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  useEffect(() => {
     async function loadProducts() {
       try {
         const data = await getAllProducts();
         setProducts(data || []);
-        setError(null);
-      } catch (err: any) {
-        setError(err.message);
+        setLoadError(false);
+      } catch (err) {
+        console.error("Error loading products:", err);
+        setLoadError(true);
       } finally {
         setLoadingProducts(false);
       }
-      console.log(products);
     }
     loadProducts();
   }, []);
+
   async function handleEstimate() {
     if (!image) return;
     setLoadingEstimate(true);
+    setEstimateError(false);
     try {
       const formData = new FormData();
       formData.append("image", image);
@@ -53,129 +62,142 @@ export default function Home() {
         body: formData,
       });
       const data = await response.json();
-      const parsed = JSON.parse(data.aiText);
-      setEstimatedPrice(parsed);
-      // console.log(data.productPriceGEL);
-      console.log(estimatedPrice);
+      setEstimatedPrice(JSON.parse(data.aiText));
     } catch (err) {
       console.error("Error estimating price:", err);
+      setEstimateError(true);
     } finally {
       setLoadingEstimate(false);
     }
   }
-  const MemoizedProductCard = memo(ProductCard);
+
+  function clearImage() {
+    setImage(null);
+    setEstimatedPrice(null);
+    setEstimateError(false);
+  }
+
   return (
     <>
       <Snowfall color="#82C3D9" />
-      <div className="p-5 flex flex-col  p-5 gap-5 ">
-        <div className="flex flex-col md:flex-row gap-5 w-full">
-          <div className=" relative w-full md:w-1/2 h-[300px] sm:h-[400px] md:h-[500px]">
+      <div className="mx-auto flex max-w-7xl flex-col gap-16 px-4 py-8 md:px-8 md:py-12">
+        <section className="grid items-center gap-8 md:grid-cols-2 md:gap-12">
+          <div className="relative h-[300px] w-full overflow-hidden rounded-2xl border border-gray-800 sm:h-[400px] md:h-[500px]">
             <Image
               src="/heromg.png"
-              alt="Hero banner showcasing featured products or promotional content for the stzore"
+              alt="ReniStore streetwear"
               fill
-              className=" object-cover opacity-50"
+              priority
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover opacity-85"
             />
           </div>
-          <div className="flex flex-col w-full md:w-1/2 items-start gap-10 ">
-            <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
-              {t("subtitlePart1")} <br />
-              {t("subtitlePart2")},
+          <div className="flex flex-col items-start gap-8">
+            <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
+              {t("subtitlePart1")} <span className="text-primary">{t("subtitlePart2")}</span>,
               <br />
               {t("subtitlePart3")}
             </h1>
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-col items-start gap-3 text-gray-300">
               <li>{t("features.quality")}</li>
               <li>{t("features.delivery")}</li>
               <li>{t("features.shipping")}</li>
             </ul>
-            <div className="flex  flex-row gap-4 mt-10 justify-center items-center">
+            <div className="flex flex-wrap items-center gap-4">
               <Link
                 href={`/${locale}/shop`}
-                className="inline-block bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition active:scale-95 touch-manipulation">
+                className="rounded-md bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary/90 active:scale-95">
                 {t("shopNow")}
               </Link>
-              <Link href={`/${locale}/new-arrivals`}>
-                <button className=" text-white px-4 py-2 rounded border-1 border-primary">
-                  {t("newDrops")}
-                </button>
+              <Link
+                href={`/${locale}/new-arrivals`}
+                className="rounded-md border border-primary px-6 py-3 font-semibold text-white transition hover:bg-primary/10 active:scale-95">
+                {t("newDrops")}
               </Link>
             </div>
           </div>
-        </div>
-        <section className="w-full  flex flex-col md:flex-col items-center gap-5 mt-10">
+        </section>
+
+        <section className="w-full">
           {products.length > 0 ? (
-            <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            <div className="grid w-full grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
               {products.map((product) => (
-                <MemoizedProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
-          ) : loadingProducts ? (
-            <p>{utilities("loadingProducts")}</p>
-          ) : error ? (
-            <p className="text-red-500">Error: {error}</p>
           ) : (
-            <p>{utilities("noProducts")}</p>
+            <p className="text-center text-gray-400">
+              {loadingProducts
+                ? utilities("loadingProducts")
+                : loadError
+                  ? utilities("loadError")
+                  : utilities("noProducts")}
+            </p>
           )}
-          <h2>{t("aiTagline")}</h2>
-          <div className="relative flex flex-col md:flex-row items-center gap-4">
-            <input
-              type="file"
-              id="file-upload"
-              className="hidden"
-              onChange={(e) => setImage(e.target.files?.[0] || null)}
-            />
+        </section>
+
+        <section className="mx-auto flex w-full max-w-2xl flex-col items-center gap-6 rounded-2xl border border-gray-800 bg-gray-900/60 p-6 text-center md:p-10">
+          <h2 className="text-xl font-semibold md:text-2xl">{t("aiTagline")}</h2>
+          <input
+            type="file"
+            id="file-upload"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => setImage(e.target.files?.[0] || null)}
+          />
+          {!image && (
             <label
               htmlFor="file-upload"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded cursor-pointer hover:bg-primary/90 transition">
+              className="inline-flex cursor-pointer items-center gap-2 rounded-md bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary/90">
               <BiUpload size={20} />
               {utilities("uploadImage")}
             </label>
-            {image && (
-              <div className="flex flex-col  items-center gap-3">
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded curpors-pointer hover:bg-red-600 transition"
-                  onClick={() => {
-                    setImage(null);
-                    setEstimatedPrice(null);
-                  }}>
-                  {utilities("delete")}
-                </button>
-                <img
-                  width={200}
-                  src={URL.createObjectURL(image)}
-                  alt={image.name}
-                />
-                {loadingEstimate && image && <p>{utilities("estimating")}</p>}
+          )}
+          {image && previewUrl && (
+            <div className="flex w-full flex-col items-center gap-4">
+              <img
+                src={previewUrl}
+                alt={image.name}
+                className="max-h-64 rounded-lg border border-gray-800 object-contain"
+              />
+              <div className="flex flex-wrap justify-center gap-3">
                 <button
                   disabled={loadingEstimate}
                   onClick={handleEstimate}
-                  className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-secondary/90 transition cursor-pointer">
-                  {utilities("estimatePrice")}
+                  className="cursor-pointer rounded-md bg-primary px-5 py-2.5 font-semibold text-white transition hover:bg-primary/90 disabled:opacity-60">
+                  {loadingEstimate ? utilities("estimating") : utilities("estimatePrice")}
                 </button>
-                {estimatedPrice && (
-                  <ul className="flex flex-col gap-2 mt-4">
-                    <li className="text-sm md:text-base">
-                      <span className="font-semibold">Product price:</span>{" "}
-                      {estimatedPrice?.productPriceGEL} GEL
-                    </li>
-                    <li className="text-sm md:text-base">
-                      <span className="font-semibold">Shipping:</span>{" "}
-                      {estimatedPrice?.shippingGEL} GEL
-                    </li>
-                    <li className="text-sm md:text-base">
-                      <span className="font-semibold">Total price:</span>{" "}
-                      {estimatedPrice?.totalPriceGEL} GEL
-                    </li>
-                    <li className="text-sm md:text-base">
-                      <span className="font-semibold">Estimated weight:</span>{" "}
-                      {estimatedPrice?.estimatedWeightKg} kg
-                    </li>
-                  </ul>
-                )}
+                <button
+                  onClick={clearImage}
+                  className="cursor-pointer rounded-md border border-red-500/60 px-5 py-2.5 font-semibold text-red-400 transition hover:bg-red-500/10">
+                  {utilities("delete")}
+                </button>
               </div>
-            )}
-          </div>
+              {estimateError && (
+                <p className="text-sm text-red-400">{utilities("estimateError")}</p>
+              )}
+              {estimatedPrice && (
+                <ul className="flex w-full max-w-sm flex-col gap-2 rounded-lg bg-gray-950/70 p-4 text-left text-sm md:text-base">
+                  <li className="flex justify-between gap-4">
+                    <span className="text-gray-400">Product price</span>
+                    <span>{estimatedPrice.productPriceGEL} GEL</span>
+                  </li>
+                  <li className="flex justify-between gap-4">
+                    <span className="text-gray-400">Shipping</span>
+                    <span>{estimatedPrice.shippingGEL} GEL</span>
+                  </li>
+                  <li className="flex justify-between gap-4 font-semibold">
+                    <span>Total price</span>
+                    <span className="text-primary">{estimatedPrice.totalPriceGEL} GEL</span>
+                  </li>
+                  <li className="flex justify-between gap-4">
+                    <span className="text-gray-400">Estimated weight</span>
+                    <span>{estimatedPrice.estimatedWeightKg} kg</span>
+                  </li>
+                </ul>
+              )}
+            </div>
+          )}
         </section>
       </div>
     </>

@@ -105,7 +105,9 @@
     "registered": "Account created. Check your email to confirm it, then sign in.",
     "invalidCredentials": "Wrong email or password.",
     "emailNotConfirmed": "Please confirm your email first. Check your inbox.",
-    "genericError": "Something went wrong. Please try again."
+    "genericError": "Something went wrong. Please try again.",
+    "serverUnavailable": "Can't reach the login server right now. Please try again later.",
+    "alreadyRegistered": "An account with this email already exists. Try signing in."
   },
   "utilities": {
     "estimating": "Estimating price...",
@@ -113,6 +115,11 @@
     "delete": "Delete",
     "uploadImage": "Upload Image",
     "loadingProducts": "Loading products...",
-    "noProducts": "No products available."
+    "noProducts": "No products available.",
+    "loadError": "We couldn't load products right now. Please try again later.",
+    "estimateError": "We couldn't estimate this price. Try another photo.",
+    "search": "Search",
+    "searchPlaceholder": "Search products...",
+    "noResults": "No products match your search."
   }
 }

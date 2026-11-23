@@ -2,16 +2,8 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <div
-      className="
-  w-full
-        bg-black
-        text-center
-        border-t-2 border-gray-800
-        text-white
-        p-4
-">
-      ©️ 2025 Renistore. All rights reserved.
-    </div>
+    <footer className="w-full border-t border-gray-800 bg-black/60 p-5 text-center text-sm text-gray-400">
+      © {new Date().getFullYear()} ReniStore. All rights reserved.
+    </footer>
   );
 }

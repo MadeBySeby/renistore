@@ -5,13 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { Suspense, useState } from "react";
-
-function friendlyError(message: string, t: ReturnType<typeof useTranslations>) {
-  const lower = message.toLowerCase();
-  if (lower.includes("invalid login credentials")) return t("invalidCredentials");
-  if (lower.includes("email not confirmed")) return t("emailNotConfirmed");
-  return message || t("genericError");
-}
+import { friendlyAuthError } from "@/lib/auth-errors";
 
 function SignInForm() {
   const locale = useLocale();
@@ -34,7 +28,7 @@ function SignInForm() {
 
     const result = await signIn(email, password);
     if (!result.success) {
-      setError(friendlyError(result.error ?? "", t));
+      setError(friendlyAuthError(result.error, t));
       setLoading(false);
       return;
     }

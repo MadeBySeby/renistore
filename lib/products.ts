@@ -92,12 +92,7 @@ export async function getAllProducts(): Promise<Product[]> {
     .select("*")
     .order("created_at", { ascending: false });
 
-  console.log("Fetched products:", data);
-  console.log("Fetch error:", error);
-  if (error) {
-    console.error("Error fetching products:", error);
-    return [];
-  }
+  if (error) throw error;
 
   return data || [];
 }

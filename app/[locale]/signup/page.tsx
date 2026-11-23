@@ -1,6 +1,7 @@
 "use client";
 
 import { signUpWithEmail } from "@/lib/auth-client";
+import { friendlyAuthError } from "@/lib/auth-errors";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,7 +32,7 @@ export default function SignUpPage() {
       }
       router.replace(`/${locale}/login?registered=true`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("genericError"));
+      setError(friendlyAuthError(err, t));
       setLoading(false);
     }
   }

@@ -55,7 +55,7 @@ export default async function RootLayout({
           <AuthProvider>
             <div className=" min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,_#111827_0,_#020712_55%)]">
               <Navbar />
-              <main className="flex-1 w-full p-4 md:p-0">{children}</main>
+              <main className="flex-1 w-full">{children}</main>
 
               <Footer />
             </div>

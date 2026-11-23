@@ -1,124 +1,121 @@
 "use client";
 import Link from "next/link";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { FiUser } from "react-icons/fi";
+import { BiMenu, BiX } from "react-icons/bi";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useLocale, useTranslations } from "next-intl";
-import { signOut } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
-import { IconBase } from "react-icons";
-import { BiMenu } from "react-icons/bi";
 
 export default function Navbar() {
-  const { user, signOut, session, isAdmin } = useAuth();
-  const router = useRouter();
-  // const [user, setUser] = useState<any>(null);
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
-  // useEffect(() => {
-  //   async function fetchUser() {
-  //     try {
-  //       const res = await fetch("/api/auth/user");
-  //       if (res.ok) {
-  //         const data = await res.json();
-  //         setUser(data.user);
-  //         console.log("Navbar user:", data);
-  //       } else {
-  //         setUser(null);
-  //       }
-  //     } catch (error) {
-  //       setUser(null);
-  //     }
-  //   }
-  //   fetchUser();
-  // }, []);
-  const handleSignOut = async () => {
-    await signOut();
-    // router.refresh();
-    // router.push(`/${locale}/`);
-  };
-
-  // console.log("Navbar user from context:", user);
-  // console.log("Navbar session from context:", session);
-  // console.log("Is Admin:", isAdmin);
+  const { user, signOut, isAdmin } = useAuth();
   const t = useTranslations("nav");
   const locale = useLocale();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = useCallback(() => setMenuOpen((open) => !open), []);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const handleSignOut = useCallback(async () => {
+    setMenuOpen(false);
+    await signOut();
+  }, [signOut]);
+
+  const accountHref = user
+    ? isAdmin
+      ? `/${locale}/dashboard`
+      : `/${locale}/profile`
+    : `/${locale}/login`;
+
+  const links = [
+    { href: `/${locale}`, label: t("home") },
+    { href: `/${locale}/shop`, label: t("shop") },
+    { href: `/${locale}/contact`, label: t("contact") },
+  ];
+
   return (
-    <nav className="flex-wrap flex justify-between items-center p-3 border-b-1 border-gray-800 ">
-      <LanguageSwitcher />
+    <nav className="sticky top-0 z-40 border-b border-gray-800 bg-[#020712]/85 backdrop-blur">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
+        <Link
+          href={`/${locale}`}
+          className="text-2xl font-bold text-primary md:text-3xl"
+          onClick={closeMenu}>
+          {t("title")}
+        </Link>
 
-      <h1 className="text-4xl text-primary mask-l-from-0%-500 to-blue-500 font-bold">
-        <Link href={`/${locale}`}>{t("title")}</Link>
-      </h1>
+        <ul className="hidden items-center gap-6 md:flex">
+          {links.map((link) => (
+            <li key={link.href}>
+              <Link href={link.href} className="text-gray-200 transition hover:text-primary">
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
 
-      <ul className="gap-3">
-        <li className="md:hidden">
-          <BiMenu
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="text-2xl cursor-pointer"
-          />
-        </li>
-        <li className="w-full">
-          <div
-            className={`absolute left-5 mt-5 z-10 flex flex-col md:hidden gap-3 transition-all duration-300 ${
-              menuOpen ? "max-h-96" : "max-h-0 md:max-h-full"
-            } overflow-hidden md:overflow-visible`}>
-            <ul className="flex flex-col gap-3">
-              <li>
-                <Link href={`/${locale}/contact`}>{t("contact")}</Link>
-              </li>
-              <li>
-                <Link href={`/${locale}/shop`}>{t("shop")}</Link>
-              </li>
-            </ul>
-          </div>
-        </li>
-
-        <li>
-          {" "}
-          <Link href={`/${locale}`}>{t("home")}</Link>
-        </li>
-        <li className="hidden md:block">
-          {" "}
-          <Link href={`/${locale}/shop`}>{t("shop")}</Link>{" "}
-        </li>
-        <li>
-          {" "}
-          {/* <Link href={`/${locale}/new-arrivals`}>{t("newArrivals")}</Link>{" "} */}
-        </li>
-        <li className="hidden md:block">
-          {" "}
-          <Link href={`/${locale}/contact`}>{t("contact")}</Link>{" "}
-        </li>
-        <li>
-          {user ? (
-            <>
-              <button className="cursor-pointer" onClick={handleSignOut}>
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <div className="hidden items-center gap-3 md:flex">
+            {user ? (
+              <button
+                className="cursor-pointer text-gray-200 transition hover:text-primary"
+                onClick={handleSignOut}>
                 {t("logout")}
               </button>
-            </>
-          ) : (
-            <Link href={`/${locale}/login`}>{t("login")}</Link>
-          )}
-        </li>
-        <li>
+            ) : (
+              <Link href={`/${locale}/login`} className="text-gray-200 transition hover:text-primary">
+                {t("login")}
+              </Link>
+            )}
+          </div>
           <Link
-            href={
-              user
-                ? isAdmin
-                  ? `/${locale}/dashboard`
-                  : `/${locale}/profile`
-                : `/${locale}/login`
-            }>
-            {" "}
+            href={accountHref}
+            aria-label={user ? t("dashboard") : t("login")}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-700 text-gray-200 transition hover:border-primary hover:text-primary">
             <FiUser />
           </Link>
-        </li>
-      </ul>
-      {/* <li>
-          <Link href={`/${locale}/cart`}>{t("cart")}</Link>
-        </li> */}
+          <button
+            type="button"
+            aria-label="Menu"
+            aria-expanded={menuOpen}
+            onClick={toggleMenu}
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md text-2xl text-gray-200 md:hidden">
+            {menuOpen ? <BiX /> : <BiMenu />}
+          </button>
+        </div>
+      </div>
+
+      {menuOpen && (
+        <div className="border-t border-gray-800 bg-[#020712] md:hidden">
+          <ul className="flex flex-col px-4 py-2">
+            {links.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  onClick={closeMenu}
+                  className="block rounded-md px-2 py-3 text-gray-200 hover:bg-gray-800 hover:text-primary">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              {user ? (
+                <button
+                  onClick={handleSignOut}
+                  className="block w-full cursor-pointer rounded-md px-2 py-3 text-left text-gray-200 hover:bg-gray-800 hover:text-primary">
+                  {t("logout")}
+                </button>
+              ) : (
+                <Link
+                  href={`/${locale}/login`}
+                  onClick={closeMenu}
+                  className="block rounded-md px-2 py-3 text-gray-200 hover:bg-gray-800 hover:text-primary">
+                  {t("login")}
+                </Link>
+              )}
+            </li>
+          </ul>
+        </div>
+      )}
     </nav>
   );
 }

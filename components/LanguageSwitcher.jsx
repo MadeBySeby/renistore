@@ -16,7 +16,7 @@ export default function LanguageSwitcher() {
         return (
           <button
             key={loc}
-            className="border-primary border-1 rounded p-2 hover:bg-primary hover:text-white transition cursor-pointer touch-manipulation active:scale-95 active:opacity-80 "
+            className="flex h-10 min-w-10 items-center justify-center rounded-md border border-primary px-2 text-sm font-medium hover:bg-primary hover:text-white transition cursor-pointer touch-manipulation active:scale-95 active:opacity-80"
             onClick={() => {
               const newPathname = pathname.replace(`/${locale}`, `/${loc}`);
               router.push(newPathname);

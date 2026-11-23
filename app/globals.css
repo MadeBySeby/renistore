@@ -30,13 +30,7 @@ body {
 }
 @layer base {
   ul {
-    display: flex;
-    gap: 1rem;
     list-style: none;
-    align-items: center;
-  }
-  ul li:hover {
-    opacity: 0.7;
   }
 }
 .no-scrollbar::-webkit-scrollbar {
