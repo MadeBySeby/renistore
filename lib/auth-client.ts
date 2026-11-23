@@ -1,26 +1,16 @@
-import { redirect } from "next/navigation";
 import { createClient } from "./supabase/client";
+
 const supabase = createClient();
-export async function signUpWithEmail(
-  email: string,
-  password: string,
-  name: string
-) {
+
+export async function signUpWithEmail(email: string, password: string, name: string) {
   const { data, error } = await supabase.auth.signUp({
-    email: email.toLowerCase(),
-    password: password,
+    email: email.trim().toLowerCase(),
+    password,
     options: {
-      data: {
-        name: name.trim(),
-      },
-    } as Record<string, any>,
+      data: { name: name.trim() },
+    },
   });
-  console.log("SignUp data:", data);
-  console.log("SignUp error:", error);
-  if (error) {
-    console.log("Error signing up:", error);
-    throw error;
-  }
+  if (error) throw error;
   return { data, error };
 }
 

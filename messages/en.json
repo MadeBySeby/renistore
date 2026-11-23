@@ -86,6 +86,27 @@
     "products": "Products",
     "aiWeight": "AI Weight"
   },
+  "auth": {
+    "signInTitle": "Sign in",
+    "signInSubtitle": "Welcome back to ReniStore",
+    "signUpTitle": "Create account",
+    "signUpSubtitle": "Join ReniStore in a few seconds",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full name",
+    "namePlaceholder": "Your name",
+    "passwordHint": "At least 6 characters",
+    "signIn": "Sign in",
+    "signingIn": "Signing in...",
+    "signUp": "Sign up",
+    "signingUp": "Creating account...",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "registered": "Account created. Check your email to confirm it, then sign in.",
+    "invalidCredentials": "Wrong email or password.",
+    "emailNotConfirmed": "Please confirm your email first. Check your inbox.",
+    "genericError": "Something went wrong. Please try again."
+  },
   "utilities": {
     "estimating": "Estimating price...",
     "estimatePrice": "Estimate Price",

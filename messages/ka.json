@@ -84,6 +84,27 @@
     "products": "პროდუქტები",
     "aiWeight": "AI წონა"
   },
+  "auth": {
+    "signInTitle": "შესვლა",
+    "signInSubtitle": "კეთილი იყოს თქვენი დაბრუნება ReniStore-ში",
+    "signUpTitle": "ანგარიშის შექმნა",
+    "signUpSubtitle": "შემოგვიერთდით რამდენიმე წამში",
+    "email": "ელფოსტა",
+    "password": "პაროლი",
+    "name": "სახელი და გვარი",
+    "namePlaceholder": "თქვენი სახელი",
+    "passwordHint": "მინიმუმ 6 სიმბოლო",
+    "signIn": "შესვლა",
+    "signingIn": "შესვლა...",
+    "signUp": "რეგისტრაცია",
+    "signingUp": "ანგარიში იქმნება...",
+    "noAccount": "არ გაქვთ ანგარიში?",
+    "haveAccount": "უკვე გაქვთ ანგარიში?",
+    "registered": "ანგარიში შეიქმნა. დაადასტურეთ ელფოსტა და შემდეგ შედით.",
+    "invalidCredentials": "ელფოსტა ან პაროლი არასწორია.",
+    "emailNotConfirmed": "ჯერ დაადასტურეთ ელფოსტა. შეამოწმეთ შემოსულები.",
+    "genericError": "რაღაც შეცდომა მოხდა. სცადეთ თავიდან."
+  },
   "utilities": {
     "estimating": "ფასის შეფასება...",
     "estimatePrice": "ფასის შეფასება",
