@@ -1,6 +1,6 @@
 import { getCachedProductBySlug, getCachedProducts } from "@/lib/products-server";
 import Link from "next/link";
-import { IoCart } from "react-icons/io5";
+import AddToCartButton from "@/components/AddToCartButton";
 
 export const revalidate = 300;
 
@@ -49,10 +49,7 @@ export default async function ProductPage({
         <h1 className="text-3xl font-bold md:text-4xl">{product.name}</h1>
         <p className="text-2xl font-bold text-primary">{Number(product.price).toFixed(2)} ₾</p>
         {product.description && <p className="leading-relaxed text-gray-300">{product.description}</p>}
-        <button className="mt-2 inline-flex w-fit cursor-pointer items-center gap-2 rounded-md bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary/90 active:scale-95">
-          Add to Cart
-          <IoCart className="text-xl" />
-        </button>
+        <AddToCartButton product={product} />
       </div>
     </div>
   );

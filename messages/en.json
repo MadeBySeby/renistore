@@ -69,9 +69,58 @@
 
   "cart": {
     "title": "Your Cart",
+    "label": "Cart",
     "empty": "Your cart is empty",
-    "checkout": "Checkout",
-    "total": "Total"
+    "emptyHint": "Browse the shop and add something you like.",
+    "browse": "Go to shop",
+    "checkout": "Place order",
+    "total": "Total",
+    "addToCart": "Add to cart",
+    "added": "Added",
+    "viewCart": "View cart",
+    "remove": "Remove",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity",
+    "detailsTitle": "Your details",
+    "detailsHint": "No payment now. We'll call you to confirm the order and delivery.",
+    "name": "Full name",
+    "namePlaceholder": "Your name",
+    "phone": "Phone",
+    "phonePlaceholder": "+995 5XX XX XX XX",
+    "email": "Email (optional)",
+    "city": "City",
+    "cityPlaceholder": "Tbilisi",
+    "address": "Address",
+    "addressPlaceholder": "Street, building, apartment",
+    "note": "Note (optional)",
+    "notePlaceholder": "Size, color, or anything else",
+    "placing": "Placing order...",
+    "successTitle": "Thank you! We received your order.",
+    "successBody": "We will contact you soon to confirm it. Your order number is #{id}.",
+    "continueShopping": "Continue shopping",
+    "invalidName": "Please enter your name.",
+    "invalidPhone": "Please enter a valid phone number.",
+    "productUnavailable": "Some items are no longer available. Please review your cart.",
+    "orderError": "We couldn't place your order. Please try again."
+  },
+
+  "orders": {
+    "title": "Orders",
+    "empty": "No orders yet. New orders will show up here.",
+    "loadError": "We couldn't load orders. Please refresh the page.",
+    "updateError": "Couldn't update the status. Please try again.",
+    "order": "Order",
+    "customer": "Customer",
+    "items": "Items",
+    "total": "Total",
+    "status": "Status",
+    "note": "Note",
+    "statuses": {
+      "new": "New",
+      "contacted": "Contacted",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
   },
 
   "footer": {

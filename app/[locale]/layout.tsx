@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import Navbar from "../../components/Navbar";
@@ -7,15 +7,20 @@ import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { locales } from "@/i18n/config";
 import { AuthProvider } from "../context/AuthContext";
+import { CartProvider } from "../context/CartContext";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
-export const metadata = {
+export const metadata: Metadata = {
   title: "Reni Store",
   description: "Georgian E-commerce Platform",
+};
+
+export const viewport: Viewport = {
   themeColor: "#020712",
-  viewport: "width=device-width, initial-scale=1",
+  width: "device-width",
+  initialScale: 1,
   colorScheme: "dark",
 };
 
@@ -31,7 +36,6 @@ export default async function RootLayout({
   return (
     <html lang={locale} className="dark">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta charSet="UTF-8" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -53,12 +57,14 @@ export default async function RootLayout({
       <body className=" min-h-screen bg-[#020712] text-white">
         <NextIntlClientProvider messages={messages} locale={locale}>
           <AuthProvider>
-            <div className=" min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,_#111827_0,_#020712_55%)]">
-              <Navbar />
-              <main className="flex-1 w-full">{children}</main>
+            <CartProvider>
+              <div className=" min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,_#111827_0,_#020712_55%)]">
+                <Navbar />
+                <main className="flex-1 w-full">{children}</main>
 
-              <Footer />
-            </div>
+                <Footer />
+              </div>
+            </CartProvider>
           </AuthProvider>
         </NextIntlClientProvider>
       </body>

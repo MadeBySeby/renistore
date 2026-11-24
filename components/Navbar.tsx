@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
-import { FiUser } from "react-icons/fi";
+import { FiShoppingCart, FiUser } from "react-icons/fi";
+import { useCart } from "@/app/context/CartContext";
 import { BiMenu, BiX } from "react-icons/bi";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useLocale, useTranslations } from "next-intl";
@@ -9,7 +10,9 @@ import { useAuth } from "@/app/context/AuthContext";
 
 export default function Navbar() {
   const { user, signOut, isAdmin } = useAuth();
+  const { count: cartCount } = useCart();
   const t = useTranslations("nav");
+  const tCart = useTranslations("cart");
   const locale = useLocale();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -67,6 +70,18 @@ export default function Navbar() {
               </Link>
             )}
           </div>
+          <Link
+            href={`/${locale}/cart`}
+            onClick={closeMenu}
+            aria-label={cartCount > 0 ? `${tCart("label")} (${cartCount})` : tCart("label")}
+            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-700 text-gray-200 transition hover:border-primary hover:text-primary">
+            <FiShoppingCart />
+            {cartCount > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-bold text-white">
+                {cartCount > 99 ? "99+" : cartCount}
+              </span>
+            )}
+          </Link>
           <Link
             href={accountHref}
             aria-label={user ? t("dashboard") : t("login")}
