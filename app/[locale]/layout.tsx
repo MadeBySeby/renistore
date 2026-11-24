@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Noto_Sans_Georgian, Poppins } from "next/font/google";
 import "../globals.css";
 import Navbar from "../../components/Navbar";
 import Footer from "@/components/Footer";
@@ -8,6 +8,20 @@ import { NextIntlClientProvider } from "next-intl";
 import { locales } from "@/i18n/config";
 import { AuthProvider } from "../context/AuthContext";
 import { CartProvider } from "../context/CartContext";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
+const notoGeorgian = Noto_Sans_Georgian({
+  subsets: ["georgian"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-georgian",
+  display: "swap",
+});
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -34,24 +48,11 @@ export default async function RootLayout({
   const { locale } = await params;
   const messages = await getMessages({ locale });
   return (
-    <html lang={locale} className="dark">
+    <html lang={locale} className={`dark ${poppins.variable} ${notoGeorgian.variable}`}>
       <head>
-        <meta charSet="UTF-8" />
-
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
+        {process.env.NEXT_PUBLIC_SUPABASE_URL && (
+          <link rel="preconnect" href={process.env.NEXT_PUBLIC_SUPABASE_URL} crossOrigin="" />
+        )}
       </head>
 
       <body className=" min-h-screen bg-[#020712] text-white">

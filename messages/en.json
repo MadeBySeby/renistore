@@ -10,7 +10,6 @@
     "login": "Login",
     "logout": "Logout"
   },
-
   "home": {
     "title": "Welcome to ReniStore",
     "subtitlePart1": "Premium",
@@ -19,16 +18,13 @@
     "shopNow": "Shop Now",
     "newDrops": "New Drops",
     "aiTagline": "Upload any product, get the price, and order it!",
-
     "features": {
       "quality": "🔥 Quality streetwear we wear ourselves",
       "delivery": "🚚 Products arrive in 7–10 working days",
       "shipping": "📦 Free shipping nationwide"
     },
-
     "estimatePrice": "Estimate Price"
   },
-
   "shop": {
     "title": "Shop",
     "allProducts": "All Products",
@@ -36,7 +32,6 @@
     "price": "Price",
     "addToCart": "Add to Cart"
   },
-
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome back",
@@ -44,7 +39,6 @@
     "settings": "Settings",
     "logout": "Log out"
   },
-
   "contact": {
     "title": "Contact Us",
     "subtitle": "Have a question? Get in touch with us",
@@ -66,7 +60,6 @@
     "sunday": "Sunday",
     "closed": "Closed"
   },
-
   "cart": {
     "title": "Your Cart",
     "label": "Cart",
@@ -103,7 +96,6 @@
     "productUnavailable": "Some items are no longer available. Please review your cart.",
     "orderError": "We couldn't place your order. Please try again."
   },
-
   "orders": {
     "title": "Orders",
     "empty": "No orders yet. New orders will show up here.",
@@ -122,13 +114,11 @@
       "cancelled": "Cancelled"
     }
   },
-
   "footer": {
     "rights": "All rights reserved",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service"
   },
-
   "sidebar": {
     "dashboard": "Dashboard",
     "orders": "Orders",
@@ -170,5 +160,98 @@
     "search": "Search",
     "searchPlaceholder": "Search products...",
     "noResults": "No products match your search."
+  },
+  "admin": {
+    "panel": "Admin panel",
+    "menu": "Menu",
+    "openMenu": "Open admin menu",
+    "closeMenu": "Close admin menu",
+    "viewStore": "View store",
+    "signOut": "Sign out",
+    "overviewTitle": "Overview",
+    "welcome": "Welcome back, {name}",
+    "newOrders": "New orders",
+    "totalOrders": "All orders",
+    "revenue": "Revenue",
+    "revenueHint": "Not counting cancelled",
+    "products": "Products",
+    "recentOrders": "Recent orders",
+    "viewAll": "View all",
+    "noOrders": "No orders yet. They will show up here.",
+    "quickActions": "Quick actions",
+    "addProduct": "Add a product",
+    "manageOrders": "Manage orders",
+    "loadError": "We couldn't load the dashboard. Please refresh the page.",
+    "productsTitle": "Products",
+    "addProductTitle": "Add product",
+    "productName": "Name",
+    "productNamePlaceholder": "Nike Fleece Jacket",
+    "productPrice": "Price (₾)",
+    "productDescription": "Description (optional)",
+    "productDescriptionPlaceholder": "Material, sizes, fit…",
+    "productImage": "Photo",
+    "chooseImage": "Choose photo",
+    "changeImage": "Change photo",
+    "adding": "Adding…",
+    "add": "Add product",
+    "added": "“{name}” was added to the store.",
+    "addError": "We couldn't add the product. Please try again.",
+    "fillRequired": "Add a name, a price above 0 and a photo.",
+    "allProducts": "All products ({count})",
+    "noProducts": "No products yet. Add your first one with the form.",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "deleteConfirm": "Delete “{name}”? This can't be undone.",
+    "deleteError": "We couldn't delete the product. Please try again.",
+    "filterAll": "All",
+    "aiTitle": "AI cost calculator",
+    "aiSubtitle": "Upload a product photo and its price in China. AI estimates the weight, and we calculate the cost with shipping.",
+    "aiUpload": "Choose product photo",
+    "aiChinesePrice": "Price in China (¥)",
+    "aiSend": "Estimate with AI",
+    "aiProcessing": "Estimating…",
+    "aiWeight": "Estimated weight",
+    "aiCost": "Cost price",
+    "aiMarkup": "Add {percent}% markup",
+    "aiSellingPrice": "Selling price",
+    "aiRemove": "Remove photo",
+    "aiError": "AI couldn't estimate this photo. Try another one."
+  },
+  "profile": {
+    "title": "My account",
+    "email": "Email",
+    "name": "Name",
+    "changeName": "Change name",
+    "namePlaceholder": "Enter new name",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "saveError": "Couldn't save your name. Please try again.",
+    "myOrders": "My orders",
+    "noOrders": "You haven't ordered anything yet.",
+    "ordersError": "We couldn't load your orders. Please refresh the page.",
+    "shopNow": "Start shopping",
+    "order": "Order"
+  },
+  "newArrivals": {
+    "title": "New arrivals",
+    "subtitle": "The latest drops, freshly added to the store."
+  },
+  "footerExtra": {
+    "tagline": "Premium streetwear, delivered across Georgia.",
+    "shop": "Shop",
+    "help": "Help",
+    "followUs": "Follow us"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you're looking for doesn't exist or was moved.",
+    "home": "Back to home",
+    "shop": "Browse the shop"
+  },
+  "errorPage": {
+    "title": "Something went wrong",
+    "body": "Please try again. If it keeps happening, contact us.",
+    "retry": "Try again"
   }
 }
