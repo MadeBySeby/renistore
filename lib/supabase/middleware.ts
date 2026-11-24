@@ -31,18 +31,20 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  let userRole = null;
-  if (user) {
+  // getClaims verifies the JWT locally when the project uses asymmetric signing
+  // keys, avoiding a round trip to Supabase Auth on every request.
+  const { data } = await supabase.auth.getClaims();
+  const userId = data?.claims?.sub ?? null;
+
+  async function getRole(): Promise<string | null> {
+    if (!userId) return null;
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
-      .eq("id", user.id)
-      .single();
-
-    userRole = profile?.role || null;
+      .eq("id", userId)
+      .maybeSingle();
+    return profile?.role ?? null;
   }
-  return { user, userRole, supabaseResponse };
+
+  return { userId, getRole, supabaseResponse };
 }

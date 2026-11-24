@@ -17,30 +17,33 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${defaultLocale}`, request.url));
   }
 
-  const { user, supabaseResponse, userRole } = await updateSession(request);
-
   const locale = pathname.split("/")[1] || defaultLocale;
 
-  const isAdminRoute = pathname.includes(`/${locale}/dashboard`);
-  const isProfileRoute = pathname.includes(`/${locale}/profile`);
+  const isAdminRoute = pathname.startsWith(`/${locale}/dashboard`);
+  const isProfileRoute = pathname.startsWith(`/${locale}/profile`);
   const isAuthRoute =
-    pathname.includes(`/${locale}/login`) ||
-    pathname.includes(`/${locale}/signup`);
+    pathname.startsWith(`/${locale}/login`) ||
+    pathname.startsWith(`/${locale}/signup`);
 
-  const isAdmin = userRole === "admin" || false;
+  // Public pages need no server-side auth; the browser client keeps the session fresh.
+  if (!isAdminRoute && !isProfileRoute && !isAuthRoute) {
+    return intlMiddleware(request);
+  }
 
-  if (isAuthRoute && user) {
-    const redirectPath = isAdmin
-      ? `/${locale}/dashboard`
-      : `/${locale}/profile`;
+  const { userId, getRole, supabaseResponse } = await updateSession(request);
+
+  if (isAuthRoute && userId) {
+    const redirectPath =
+      (await getRole()) === "admin" ? `/${locale}/dashboard` : `/${locale}/profile`;
     return NextResponse.redirect(new URL(redirectPath, request.url));
   }
 
-  if (isProfileRoute && !user) {
+  if (isProfileRoute && !userId) {
     return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
   }
-  if (isAdminRoute && !isAdmin) {
-    const redirectPath = user ? `/${locale}/profile` : `/${locale}/login`;
+
+  if (isAdminRoute && (await getRole()) !== "admin") {
+    const redirectPath = userId ? `/${locale}/profile` : `/${locale}/login`;
     return NextResponse.redirect(new URL(redirectPath, request.url));
   }
 

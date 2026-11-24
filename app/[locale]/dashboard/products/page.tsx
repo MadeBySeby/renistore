@@ -1,5 +1,6 @@
 "use client";
 import { addProduct } from "@/lib/products";
+import { refreshProductsCache } from "@/app/actions/products";
 import React, { useState } from "react";
 import { BiUpload } from "react-icons/bi";
 
@@ -21,6 +22,8 @@ export default function DashboardProductsPage() {
         },
         productImage || undefined
       );
+      await refreshProductsCache();
+      setLoading(false);
       alert("Added product: " + JSON.stringify(newProduct));
     } catch (error) {
       setLoading(false);

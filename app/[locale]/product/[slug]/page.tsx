@@ -1,6 +1,13 @@
-import { getProductBySlug } from "@/lib/products";
+import { getCachedProductBySlug, getCachedProducts } from "@/lib/products-server";
 import Link from "next/link";
 import { IoCart } from "react-icons/io5";
+
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const products = await getCachedProducts().catch(() => []);
+  return products.map((product) => ({ slug: product.slug }));
+}
 
 export default async function ProductPage({
   params,
@@ -9,7 +16,7 @@ export default async function ProductPage({
 }) {
   const { slug, locale } = await params;
 
-  const product = await getProductBySlug(slug);
+  const product = await getCachedProductBySlug(decodeURIComponent(slug)).catch(() => null);
 
   if (!product) {
     return (
@@ -28,7 +35,14 @@ export default async function ProductPage({
     <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-8 md:grid-cols-2 md:gap-12 md:px-8 md:py-12">
       <div className="overflow-hidden rounded-2xl border border-gray-800 bg-gray-950">
         {product.image_url && (
-          <img className="aspect-square w-full object-cover" src={product.image_url} alt={product.name} />
+          <img
+            className="aspect-square w-full object-cover"
+            src={product.image_url}
+            alt={product.name}
+            width={800}
+            height={800}
+            fetchPriority="high"
+          />
         )}
       </div>
       <div className="flex flex-col gap-5">

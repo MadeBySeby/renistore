@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { User, Session } from "@supabase/supabase-js";
@@ -29,6 +29,28 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const PROFILE_STORAGE_KEY = "renistore.profile";
+
+function readStoredProfile(userId: string): Profile | null | undefined {
+  try {
+    const raw = sessionStorage.getItem(PROFILE_STORAGE_KEY);
+    if (!raw) return undefined;
+    const stored = JSON.parse(raw) as { userId: string; profile: Profile | null };
+    return stored.userId === userId ? stored.profile : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function storeProfile(userId: string | null, profile: Profile | null) {
+  try {
+    if (!userId) sessionStorage.removeItem(PROFILE_STORAGE_KEY);
+    else sessionStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify({ userId, profile }));
+  } catch {
+    // Storage can be unavailable (private mode); the profile is simply refetched.
+  }
+}
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const locale = useLocale();
   const router = useRouter();
@@ -38,6 +60,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [profile, setProfile] = useState<Profile | null | undefined>(undefined);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const profileLoadedFor = useRef<string | null>(null);
 
   const isAdmin = profile?.role === "admin";
 
@@ -48,7 +71,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       .eq("id", userId)
       .maybeSingle();
     if (error) console.error("Error loading profile:", error.message);
-    return data ?? null;
+    const loaded = data ?? null;
+    profileLoadedFor.current = userId;
+    storeProfile(userId, loaded);
+    return loaded;
   }
 
   useEffect(() => {
@@ -65,9 +91,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(nextUser);
 
       if (!nextUser) {
+        profileLoadedFor.current = null;
+        storeProfile(null, null);
         setProfile(null);
         setLoading(false);
         return;
+      }
+
+      // Token refreshes and the SIGNED_IN event after signIn() reuse the loaded profile.
+      if (profileLoadedFor.current === nextUser.id) {
+        setLoading(false);
+        return;
+      }
+
+      const stored = readStoredProfile(nextUser.id);
+      if (stored !== undefined) {
+        setProfile(stored);
+        setLoading(false);
       }
 
       setTimeout(async () => {
@@ -113,6 +153,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error) {
       console.error(error);
     }
+    profileLoadedFor.current = null;
+    storeProfile(null, null);
     setUser(null);
     setSession(null);
     setProfile(null);

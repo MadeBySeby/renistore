@@ -8,8 +8,9 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { memo, useState } from "react";
 import type { Product } from "@/lib/products";
+import { refreshProductsCache } from "@/app/actions/products";
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product, priority = false }: { product: Product; priority?: boolean }) {
   const locale = useLocale();
   const { isAdmin } = useAuth();
   const router = useRouter();
@@ -20,6 +21,7 @@ function ProductCard({ product }: { product: Product }) {
     try {
       const { error } = await createClient().from("products").delete().eq("id", product.id);
       if (error) throw error;
+      await refreshProductsCache();
       router.refresh();
     } catch (err) {
       console.error("Failed to delete product:", err);
@@ -36,7 +38,11 @@ function ProductCard({ product }: { product: Product }) {
             <img
               src={product.image_url}
               alt={product.name}
-              loading="lazy"
+              width={800}
+              height={800}
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : "auto"}
+              decoding="async"
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           )}
