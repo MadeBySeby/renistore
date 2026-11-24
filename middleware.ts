@@ -58,9 +58,12 @@ export async function middleware(request: NextRequest) {
   return supabaseResponse;
 }
 
+// Public localized pages (home, shop, product, contact) skip middleware entirely so the
+// CDN can serve their cached HTML directly; only auth-gated pages and unprefixed paths run it.
 export const config = {
   matcher: [
     "/",
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/(en|ka)/(dashboard|profile|login|signup)/:path*",
+    "/((?!api|_next|favicon.ico|en(?:/|$)|ka(?:/|$)|.*\\..*).*)",
   ],
 };
