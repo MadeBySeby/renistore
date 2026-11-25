@@ -42,8 +42,8 @@ export default function HomeView({ products }: { products: Product[] | null }) {
         method: "POST",
         body: formData,
       });
-      const data = await response.json();
-      setEstimatedPrice(JSON.parse(data.aiText));
+      if (!response.ok) throw new Error(`Estimate failed with status ${response.status}`);
+      setEstimatedPrice((await response.json()) as EstimatedPrice);
     } catch (err) {
       console.error("Error estimating price:", err);
       setEstimateError(true);
