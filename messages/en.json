@@ -161,7 +161,8 @@
     "estimateError": "We couldn't estimate this price. Try another photo.",
     "search": "Search",
     "searchPlaceholder": "Search products...",
-    "noResults": "No products match your search."
+    "noResults": "No products match your search.",
+    "unsupportedImage": "This photo format isn't supported. Please use a JPG or PNG photo, or take a screenshot of it."
   },
   "admin": {
     "panel": "Admin panel",

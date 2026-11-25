@@ -8,6 +8,7 @@ const CNY_TO_GEL = 0.382;
 const USD_TO_GEL = 2.9;
 const SHIPPING_USD_PER_KG = 8;
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const MAX_IMAGE_DIMENSION = 1280;
 const MAX_CATALOG_ITEMS = 200;
 const SUPPORTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
@@ -39,14 +40,21 @@ function round2(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
-async function toDataUrl(file: File): Promise<string> {
-  let buffer: Buffer = Buffer.from(await file.arrayBuffer());
-  let mimeType = file.type?.toLowerCase() || "";
-  if (!SUPPORTED_TYPES.includes(mimeType)) {
-    buffer = await sharp(buffer).jpeg({ quality: 85 }).toBuffer();
-    mimeType = "image/jpeg";
+async function toDataUrl(file: File): Promise<string | null> {
+  const input = Buffer.from(await file.arrayBuffer());
+  try {
+    const output = await sharp(input)
+      .rotate()
+      .resize({ width: MAX_IMAGE_DIMENSION, height: MAX_IMAGE_DIMENSION, fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: 85 })
+      .toBuffer();
+    return `data:image/jpeg;base64,${output.toString("base64")}`;
+  } catch (error) {
+    const mimeType = file.type?.toLowerCase() || "";
+    if (SUPPORTED_TYPES.includes(mimeType)) return `data:${mimeType};base64,${input.toString("base64")}`;
+    console.error("Unsupported image for estimate:", mimeType, error);
+    return null;
   }
-  return `data:${mimeType};base64,${buffer.toString("base64")}`;
 }
 
 export async function POST(req: NextRequest) {
@@ -62,6 +70,11 @@ export async function POST(req: NextRequest) {
   }
   if (image.size > MAX_IMAGE_BYTES) {
     return NextResponse.json({ error: "image_too_large" }, { status: 413 });
+  }
+
+  const imageUrl = await toDataUrl(image);
+  if (!imageUrl) {
+    return NextResponse.json({ error: "unsupported_image" }, { status: 415 });
   }
 
   try {
@@ -81,7 +94,7 @@ export async function POST(req: NextRequest) {
         {
           role: "user",
           content: [
-            { type: "image_url", image_url: { url: await toDataUrl(image) } },
+            { type: "image_url", image_url: { url: imageUrl } },
             { type: "text", text: buildPrompt(catalog) },
           ],
         },

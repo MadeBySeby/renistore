@@ -1,9 +1,11 @@
+import { compressImage } from "./compress-image";
+
 export async function sendToAi(image: File, endpoint: string) {
   if (!image) {
     throw new Error("No image provided");
   }
   const formdata = new FormData();
-  formdata.append("image", image);
+  formdata.append("image", await compressImage(image));
 
   const res = await fetch(endpoint, {
     method: "POST",

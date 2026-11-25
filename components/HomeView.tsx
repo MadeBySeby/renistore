@@ -7,6 +7,7 @@ import Link from "next/link";
 import type { Product } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
 import AddToCartButton from "@/components/AddToCartButton";
+import { compressImage } from "@/lib/compress-image";
 import Snowfall from "react-snowfall";
 
 interface EstimatedPrice {
@@ -27,7 +28,7 @@ export default function HomeView({ products }: { products: Product[] | null }) {
   const [image, setImage] = useState<File | null>(null);
   const locale = useLocale();
   const [loadingEstimate, setLoadingEstimate] = useState(false);
-  const [estimateError, setEstimateError] = useState(false);
+  const [estimateError, setEstimateError] = useState<"estimateError" | "unsupportedImage" | null>(null);
   const [estimatedPrice, setEstimatedPrice] = useState<EstimatedPrice | null>(null);
   const [matchedProduct, setMatchedProduct] = useState<MatchedProduct | null>(null);
   const t = useTranslations("home");
@@ -43,16 +44,20 @@ export default function HomeView({ products }: { products: Product[] | null }) {
   async function handleEstimate() {
     if (!image) return;
     setLoadingEstimate(true);
-    setEstimateError(false);
+    setEstimateError(null);
     setEstimatedPrice(null);
     setMatchedProduct(null);
     try {
       const formData = new FormData();
-      formData.append("image", image);
+      formData.append("image", await compressImage(image));
       const response = await fetch("/api/ai/estimate", {
         method: "POST",
         body: formData,
       });
+      if (response.status === 413 || response.status === 415) {
+        setEstimateError("unsupportedImage");
+        return;
+      }
       if (!response.ok) throw new Error(`Estimate failed with status ${response.status}`);
       const data = (await response.json()) as EstimateResponse;
       if (data.matchedProduct) setMatchedProduct(data.matchedProduct);
@@ -60,7 +65,7 @@ export default function HomeView({ products }: { products: Product[] | null }) {
       else throw new Error("Empty estimate response");
     } catch (err) {
       console.error("Error estimating price:", err);
-      setEstimateError(true);
+      setEstimateError("estimateError");
     } finally {
       setLoadingEstimate(false);
     }
@@ -70,7 +75,7 @@ export default function HomeView({ products }: { products: Product[] | null }) {
     setImage(null);
     setEstimatedPrice(null);
     setMatchedProduct(null);
-    setEstimateError(false);
+    setEstimateError(null);
   }
 
   return (
@@ -166,7 +171,7 @@ export default function HomeView({ products }: { products: Product[] | null }) {
                 </button>
               </div>
               {estimateError && (
-                <p className="text-sm text-red-400">{utilities("estimateError")}</p>
+                <p className="text-sm text-red-400">{utilities(estimateError)}</p>
               )}
               {matchedProduct && (
                 <div className="flex w-full max-w-sm flex-col gap-3 rounded-lg border border-primary/50 bg-primary/10 p-4 text-left">
