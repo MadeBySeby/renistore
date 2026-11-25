@@ -1,25 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import sharp from "sharp";
+import type { Product } from "@/lib/products";
+import { getCachedProducts } from "@/lib/products-server";
 
 const CNY_TO_GEL = 0.382;
 const USD_TO_GEL = 2.9;
 const SHIPPING_USD_PER_KG = 8;
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const MAX_CATALOG_ITEMS = 200;
 const SUPPORTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-const PROMPT = `
-You estimate prices for a Georgian streetwear shop that imports from China.
-Look at the product in the image and estimate:
-1. Its typical price on Pinduoduo in CNY. If it looks like a replica, use a replica price.
-2. Its realistic shipping weight in kilograms, including packaging.
+function buildPrompt(catalog: Product[]): string {
+  const catalogLines = catalog
+    .map((product) => `${product.id}: ${product.name}${product.description ? ` (${product.description})` : ""}`)
+    .join("\n");
 
-Base both numbers on this specific item: its category, size and materials (for example sneakers weigh more than a beanie).
-Respond with JSON only, with two numeric fields: "productPriceCNY" and "estimatedWeightKg".
-If the image is not a product, set both fields to -1.
+  return `
+You help a Georgian streetwear shop that imports clothes, shoes and accessories from China.
+
+Task 1 (always do this for any clothing, shoes or accessory, whether or not the shop sells it):
+- "productPriceCNY": the item's typical price on Pinduoduo in CNY. If it looks like a replica, use a replica price.
+- "estimatedWeightKg": its realistic shipping weight in kilograms, including packaging.
+Base both numbers on this specific item's category, size and materials (for example sneakers weigh more than a beanie).
+Use -1 for both numbers only when the photo shows no clothing, shoes or accessory at all.
+
+Task 2: compare the photo with the shop's catalog below (format "id: name (description)").
+${catalogLines || "(empty)"}
+"matchedProductId": the numeric catalog id when the photo shows the same kind of item with the same main colors and design as a catalog entry (brand logos may be missing from the photo). Otherwise null.
+
+Respond with JSON only, in the shape {"productPriceCNY": number, "estimatedWeightKg": number, "matchedProductId": number or null}.
 `.trim();
+}
 
 function round2(value: number): number {
   return Math.round(value * 100) / 100;
@@ -51,24 +65,48 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const catalog = (
+      await getCachedProducts().catch((error: unknown) => {
+        console.error("Error loading catalog for estimate:", error);
+        return [] as Product[];
+      })
+    ).slice(0, MAX_CATALOG_ITEMS);
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       response_format: { type: "json_object" },
-      temperature: 0.3,
-      max_tokens: 100,
+      temperature: 0.2,
+      max_tokens: 120,
       messages: [
         {
           role: "user",
           content: [
             { type: "image_url", image_url: { url: await toDataUrl(image) } },
-            { type: "text", text: PROMPT },
+            { type: "text", text: buildPrompt(catalog) },
           ],
         },
       ],
     });
 
     const parsed: unknown = JSON.parse(response.choices[0]?.message.content || "{}");
-    const { productPriceCNY, estimatedWeightKg } = (parsed ?? {}) as Record<string, unknown>;
+    const { matchedProductId, productPriceCNY, estimatedWeightKg } = (parsed ?? {}) as Record<string, unknown>;
+
+    const matched =
+      matchedProductId === null || matchedProductId === undefined
+        ? undefined
+        : catalog.find((product) => String(product.id) === String(matchedProductId));
+    if (matched) {
+      return NextResponse.json({
+        matchedProduct: {
+          id: matched.id,
+          name: matched.name,
+          slug: matched.slug,
+          price: Number(matched.price),
+          image_url: matched.image_url,
+        },
+      });
+    }
+
     const priceCny = Number(productPriceCNY);
     const weightKg = Number(estimatedWeightKg);
     if (!(priceCny > 0) || !(weightKg > 0)) {
@@ -78,10 +116,12 @@ export async function POST(req: NextRequest) {
     const productPriceGEL = round2(priceCny * CNY_TO_GEL);
     const shippingGEL = round2(weightKg * SHIPPING_USD_PER_KG * USD_TO_GEL);
     return NextResponse.json({
-      productPriceGEL,
-      shippingGEL,
-      totalPriceGEL: round2(productPriceGEL + shippingGEL),
-      estimatedWeightKg: round2(weightKg),
+      estimate: {
+        productPriceGEL,
+        shippingGEL,
+        totalPriceGEL: round2(productPriceGEL + shippingGEL),
+        estimatedWeightKg: round2(weightKg),
+      },
     });
   } catch (error) {
     console.error("Error estimating price:", error);

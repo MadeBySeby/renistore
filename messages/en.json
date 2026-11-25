@@ -23,7 +23,9 @@
       "delivery": "🚚 Products arrive in 7–10 working days",
       "shipping": "📦 Free shipping nationwide"
     },
-    "estimatePrice": "Estimate Price"
+    "estimatePrice": "Estimate Price",
+    "inStockTitle": "We already have this in the shop",
+    "inStockBody": "No estimate needed — order it at our shop price."
   },
   "shop": {
     "title": "Shop",

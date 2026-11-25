@@ -3,7 +3,7 @@ import { getCachedProducts } from "@/lib/products-server";
 
 export const revalidate = 300;
 
-const NEW_ARRIVALS_LIMIT = 8;
+const NEW_ARRIVALS_LIMIT = 4;
 
 export default async function NewArrivalsPage() {
   const products = await getCachedProducts().catch((err) => {

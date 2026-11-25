@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { Product } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
+import AddToCartButton from "@/components/AddToCartButton";
 import Snowfall from "react-snowfall";
 
 interface EstimatedPrice {
@@ -15,12 +16,20 @@ interface EstimatedPrice {
   estimatedWeightKg: number;
 }
 
+type MatchedProduct = Pick<Product, "id" | "name" | "slug" | "price" | "image_url">;
+
+interface EstimateResponse {
+  estimate?: EstimatedPrice;
+  matchedProduct?: MatchedProduct;
+}
+
 export default function HomeView({ products }: { products: Product[] | null }) {
   const [image, setImage] = useState<File | null>(null);
   const locale = useLocale();
   const [loadingEstimate, setLoadingEstimate] = useState(false);
   const [estimateError, setEstimateError] = useState(false);
   const [estimatedPrice, setEstimatedPrice] = useState<EstimatedPrice | null>(null);
+  const [matchedProduct, setMatchedProduct] = useState<MatchedProduct | null>(null);
   const t = useTranslations("home");
   const utilities = useTranslations("utilities");
 
@@ -35,6 +44,8 @@ export default function HomeView({ products }: { products: Product[] | null }) {
     if (!image) return;
     setLoadingEstimate(true);
     setEstimateError(false);
+    setEstimatedPrice(null);
+    setMatchedProduct(null);
     try {
       const formData = new FormData();
       formData.append("image", image);
@@ -43,7 +54,10 @@ export default function HomeView({ products }: { products: Product[] | null }) {
         body: formData,
       });
       if (!response.ok) throw new Error(`Estimate failed with status ${response.status}`);
-      setEstimatedPrice((await response.json()) as EstimatedPrice);
+      const data = (await response.json()) as EstimateResponse;
+      if (data.matchedProduct) setMatchedProduct(data.matchedProduct);
+      else if (data.estimate) setEstimatedPrice(data.estimate);
+      else throw new Error("Empty estimate response");
     } catch (err) {
       console.error("Error estimating price:", err);
       setEstimateError(true);
@@ -55,6 +69,7 @@ export default function HomeView({ products }: { products: Product[] | null }) {
   function clearImage() {
     setImage(null);
     setEstimatedPrice(null);
+    setMatchedProduct(null);
     setEstimateError(false);
   }
 
@@ -152,6 +167,28 @@ export default function HomeView({ products }: { products: Product[] | null }) {
               </div>
               {estimateError && (
                 <p className="text-sm text-red-400">{utilities("estimateError")}</p>
+              )}
+              {matchedProduct && (
+                <div className="flex w-full max-w-sm flex-col gap-3 rounded-lg border border-primary/50 bg-primary/10 p-4 text-left">
+                  <p className="font-semibold text-primary">{t("inStockTitle")}</p>
+                  <Link href={`/${locale}/product/${matchedProduct.slug}`} className="flex items-center gap-3">
+                    {matchedProduct.image_url && (
+                      <img
+                        src={matchedProduct.image_url}
+                        alt=""
+                        className="h-16 w-16 shrink-0 rounded-md border border-gray-800 object-cover"
+                      />
+                    )}
+                    <span className="min-w-0">
+                      <span className="block truncate font-medium text-white">{matchedProduct.name}</span>
+                      <span className="block text-lg font-bold text-primary">
+                        {Number(matchedProduct.price).toFixed(2)} ₾
+                      </span>
+                    </span>
+                  </Link>
+                  <p className="text-sm text-gray-300">{t("inStockBody")}</p>
+                  <AddToCartButton product={matchedProduct} />
+                </div>
               )}
               {estimatedPrice && (
                 <ul className="flex w-full max-w-sm flex-col gap-2 rounded-lg bg-gray-950/70 p-4 text-left text-sm md:text-base">
