@@ -1,7 +1,7 @@
 "use client";
 import { useCart } from "@/app/context/CartContext";
 import SizePicker from "@/components/SizePicker";
-import { productSizes, stockBadge, type Product } from "@/lib/products";
+import { isSoldOut, productSizes, type Product } from "@/lib/products";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
@@ -17,8 +17,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
   const [size, setSize] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
   const [needSize, setNeedSize] = useState(false);
-  const badge = stockBadge(product);
-  const soldOut = badge === "soldOut";
+  const soldOut = isSoldOut(product);
 
   const handleAdd = useCallback(() => {
     if (soldOut) return;
@@ -40,9 +39,6 @@ export default function AddToCartButton({ product }: { product: Product }) {
   return (
     <div className="mt-2 flex flex-col gap-3">
       {needsSize && <SizePicker product={product} value={size} onChange={handleSize} />}
-      {badge === "almostSoldOut" && (
-        <p className="text-sm font-medium text-amber-400">{tProduct("almostSoldOut")}</p>
-      )}
       {soldOut ? (
         <p className="text-sm font-semibold text-red-400">{tProduct("soldOut")}</p>
       ) : (

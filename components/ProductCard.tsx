@@ -7,7 +7,7 @@ import { IoCart } from "react-icons/io5";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { memo, useState } from "react";
-import { stockBadge, type Product } from "@/lib/products";
+import { isSoldOut, type Product } from "@/lib/products";
 import { refreshProductsCache } from "@/app/actions/products";
 
 function ProductCard({ product, priority = false }: { product: Product; priority?: boolean }) {
@@ -17,7 +17,7 @@ function ProductCard({ product, priority = false }: { product: Product; priority
   const { isAdmin } = useAuth();
   const router = useRouter();
   const [deleting, setDeleting] = useState(false);
-  const badge = stockBadge(product);
+  const soldOut = isSoldOut(product);
 
   async function deleteProduct() {
     setDeleting(true);
@@ -35,12 +35,9 @@ function ProductCard({ product, priority = false }: { product: Product; priority
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-800 bg-gray-900/80 transition hover:border-primary/60">
-      {badge && (
-        <span
-          className={`absolute left-3 top-3 z-10 rounded-md px-2 py-1 text-xs font-semibold ${
-            badge === "soldOut" ? "bg-red-500/90 text-white" : "bg-amber-500/90 text-[#111]"
-          }`}>
-          {tProduct(badge)}
+      {soldOut && (
+        <span className="absolute left-3 top-3 z-10 rounded-md bg-red-500/90 px-2 py-1 text-xs font-semibold text-white">
+          {tProduct("soldOut")}
         </span>
       )}
       <Link href={`/${locale}/product/${product.slug}`} className="flex flex-col">
@@ -67,7 +64,7 @@ function ProductCard({ product, priority = false }: { product: Product; priority
           aria-label={`${t("addToCart")}: ${product.name}`}
           className="flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-md border border-primary/50 px-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white active:scale-95">
           <IoCart className="text-xl" />
-          <span className="hidden sm:inline">{badge === "soldOut" ? tProduct("soldOut") : t("addToCart")}</span>
+          <span className="hidden sm:inline">{soldOut ? tProduct("soldOut") : t("addToCart")}</span>
         </Link>
       </div>
       {isAdmin && (

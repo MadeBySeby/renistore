@@ -276,7 +276,6 @@
     "pickSize": "Please choose a size.",
     "onlyLeft": "Only {count} left",
     "inStock": "{count} in stock",
-    "almostSoldOut": "Almost sold out",
     "soldOut": "Sold out"
   }
 }

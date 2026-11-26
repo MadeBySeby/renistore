@@ -275,7 +275,6 @@
     "pickSize": "გთხოვთ აირჩიოთ ზომა.",
     "onlyLeft": "დარჩა მხოლოდ {count}",
     "inStock": "მარაგში {count}",
-    "almostSoldOut": "თითქმის ამოიწურა",
     "soldOut": "ამოიწურა"
   }
 }

@@ -46,7 +46,7 @@ export default function SizePicker({
           const stock = sizes.find((entry) => entry.size === value)?.stock ?? 0;
           if (stock <= 0) return null;
           if (stock <= LOW_STOCK_LIMIT) {
-            return <p className="text-sm font-medium text-amber-400">{t("onlyLeft", { count: stock })}</p>;
+            return <p className="text-sm font-medium text-red-400">{t("onlyLeft", { count: stock })}</p>;
           }
           return <p className="text-sm text-gray-400">{t("inStock", { count: stock })}</p>;
         })()}
