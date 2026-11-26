@@ -1,35 +1,23 @@
 "use client";
 import { useAuth } from "@/app/context/AuthContext";
-import { useCart } from "@/app/context/CartContext";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { MdDelete } from "react-icons/md";
-import { IoCart, IoCheckmark } from "react-icons/io5";
+import { IoCart } from "react-icons/io5";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { memo, useCallback, useEffect, useState } from "react";
-import type { Product } from "@/lib/products";
+import { memo, useState } from "react";
+import { stockBadge, type Product } from "@/lib/products";
 import { refreshProductsCache } from "@/app/actions/products";
 
 function ProductCard({ product, priority = false }: { product: Product; priority?: boolean }) {
   const locale = useLocale();
   const t = useTranslations("cart");
+  const tProduct = useTranslations("product");
   const { isAdmin } = useAuth();
-  const { addItem } = useCart();
   const router = useRouter();
   const [deleting, setDeleting] = useState(false);
-  const [justAdded, setJustAdded] = useState(false);
-
-  useEffect(() => {
-    if (!justAdded) return;
-    const timer = setTimeout(() => setJustAdded(false), 1500);
-    return () => clearTimeout(timer);
-  }, [justAdded]);
-
-  const handleAdd = useCallback(() => {
-    addItem(product);
-    setJustAdded(true);
-  }, [addItem, product]);
+  const badge = stockBadge(product);
 
   async function deleteProduct() {
     setDeleting(true);
@@ -46,7 +34,15 @@ function ProductCard({ product, priority = false }: { product: Product; priority
   }
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl border border-gray-800 bg-gray-900/80 transition hover:border-primary/60">
+    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-800 bg-gray-900/80 transition hover:border-primary/60">
+      {badge && (
+        <span
+          className={`absolute left-3 top-3 z-10 rounded-md px-2 py-1 text-xs font-semibold ${
+            badge === "soldOut" ? "bg-red-500/90 text-white" : "bg-amber-500/90 text-[#111]"
+          }`}>
+          {tProduct(badge)}
+        </span>
+      )}
       <Link href={`/${locale}/product/${product.slug}`} className="flex flex-col">
         <div className="aspect-square w-full overflow-hidden bg-gray-950">
           {product.image_url && (
@@ -66,14 +62,13 @@ function ProductCard({ product, priority = false }: { product: Product; priority
       </Link>
       <div className="mt-auto flex items-center justify-between gap-2 p-4 pt-2">
         <p className="font-bold text-primary">{Number(product.price).toFixed(2)} ₾</p>
-        <button
-          type="button"
-          onClick={handleAdd}
+        <Link
+          href={`/${locale}/product/${product.slug}`}
           aria-label={`${t("addToCart")}: ${product.name}`}
-          className="flex h-11 min-w-11 cursor-pointer items-center justify-center gap-1.5 rounded-md border border-primary/50 px-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white active:scale-95">
-          {justAdded ? <IoCheckmark className="text-xl" /> : <IoCart className="text-xl" />}
-          <span className="hidden sm:inline">{justAdded ? t("added") : t("addToCart")}</span>
-        </button>
+          className="flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-md border border-primary/50 px-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white active:scale-95">
+          <IoCart className="text-xl" />
+          <span className="hidden sm:inline">{badge === "soldOut" ? tProduct("soldOut") : t("addToCart")}</span>
+        </Link>
       </div>
       {isAdmin && (
         <button

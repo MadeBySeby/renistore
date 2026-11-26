@@ -165,10 +165,12 @@ export default function OrdersPage() {
                 <div className="space-y-2 text-sm">
                   <p className="text-gray-400">{t("items")}</p>
                   <ul className="space-y-1">
-                    {order.items.map((item) => (
-                      <li key={item.product_id} className="flex justify-between gap-4">
+                    {order.items.map((item, index) => (
+                      <li key={`${item.product_id ?? "estimate"}-${item.size ?? ""}-${index}`} className="flex justify-between gap-4">
                         <span>
-                          {item.name} × {item.quantity}
+                          {item.name}
+                          {item.size ? ` (${item.size})` : ""}
+                          {item.kind === "estimate" ? " · AI" : ""} × {item.quantity}
                         </span>
                         <span className="text-gray-300">{formatGel(Number(item.price) * item.quantity)}</span>
                       </li>

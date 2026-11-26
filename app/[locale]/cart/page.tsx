@@ -1,6 +1,6 @@
 "use client";
 import { useAuth } from "@/app/context/AuthContext";
-import { MAX_QUANTITY, useCart } from "@/app/context/CartContext";
+import { cartLineKey, useCart } from "@/app/context/CartContext";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -16,6 +16,9 @@ function orderErrorKey(message: string) {
   if (message.includes("invalid_name")) return "invalidName";
   if (message.includes("invalid_phone")) return "invalidPhone";
   if (message.includes("product_unavailable")) return "productUnavailable";
+  if (message.includes("size_required") || message.includes("size_unavailable")) return "sizeRequired";
+  if (message.includes("not_enough_stock")) return "notEnoughStock";
+  if (message.includes("invalid_estimate")) return "orderError";
   return "orderError";
 }
 
@@ -55,7 +58,22 @@ export default function CartPage() {
         body: JSON.stringify({
           locale,
           customer: { name, phone, email, city, address, note },
-          items: items.map((item) => ({ product_id: Number(item.productId), quantity: item.quantity })),
+          items: items.map((item) =>
+            item.estimate
+              ? {
+                  kind: "estimate",
+                  name: item.name,
+                  price: item.price,
+                  quantity: item.quantity,
+                  image_url: item.imageUrl?.startsWith("http") ? item.imageUrl : undefined,
+                  estimate: item.estimate,
+                }
+              : {
+                  product_id: Number(item.productId),
+                  quantity: item.quantity,
+                  size: item.size,
+                },
+          ),
         }),
       });
       const result = (await response.json().catch(() => ({}))) as { id?: number; error?: string; emailSent?: boolean };
@@ -118,63 +136,80 @@ export default function CartPage() {
       <section className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold">{t("title")}</h1>
         <ul className="flex flex-col gap-3">
-          {items.map((item) => (
-            <li
-              key={item.productId}
-              className="flex items-center gap-4 rounded-xl border border-gray-800 bg-gray-900/80 p-3">
-              <Link href={`/${locale}/product/${item.slug}`} className="shrink-0">
-                {item.imageUrl ? (
-                  <img
-                    src={item.imageUrl}
-                    alt={item.name}
-                    width={80}
-                    height={80}
-                    className="h-20 w-20 rounded-lg object-cover"
-                  />
+          {items.map((item) => {
+            const key = cartLineKey(item);
+            const maxQty = item.maxQuantity ?? 20;
+            const href = item.estimate ? null : `/${locale}/product/${item.slug}`;
+            const thumb = item.imageUrl ? (
+              <img
+                src={item.imageUrl}
+                alt={item.name}
+                width={80}
+                height={80}
+                className="h-20 w-20 rounded-lg object-cover"
+              />
+            ) : (
+              <div className="h-20 w-20 rounded-lg bg-gray-950" />
+            );
+            return (
+              <li key={key} className="flex items-center gap-4 rounded-xl border border-gray-800 bg-gray-900/80 p-3">
+                {href ? (
+                  <Link href={href} className="shrink-0">
+                    {thumb}
+                  </Link>
                 ) : (
-                  <div className="h-20 w-20 rounded-lg bg-gray-950" />
+                  <div className="shrink-0">{thumb}</div>
                 )}
-              </Link>
-              <div className="flex min-w-0 flex-1 flex-col gap-2">
-                <Link
-                  href={`/${locale}/product/${item.slug}`}
-                  className="truncate font-semibold hover:text-primary">
-                  {item.name}
-                </Link>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center rounded-md border border-gray-700">
-                    <button
-                      type="button"
-                      aria-label={t("decrease")}
-                      disabled={item.quantity <= 1}
-                      onClick={() => setQuantity(item.productId, item.quantity - 1)}
-                      className="flex h-11 w-11 cursor-pointer items-center justify-center text-gray-300 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40">
-                      <FiMinus />
-                    </button>
-                    <span className="w-8 text-center font-semibold" aria-live="polite">
-                      {item.quantity}
-                    </span>
-                    <button
-                      type="button"
-                      aria-label={t("increase")}
-                      disabled={item.quantity >= MAX_QUANTITY}
-                      onClick={() => setQuantity(item.productId, item.quantity + 1)}
-                      className="flex h-11 w-11 cursor-pointer items-center justify-center text-gray-300 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40">
-                      <FiPlus />
-                    </button>
+                <div className="flex min-w-0 flex-1 flex-col gap-2">
+                  {href ? (
+                    <Link href={href} className="truncate font-semibold hover:text-primary">
+                      {item.name}
+                    </Link>
+                  ) : (
+                    <p className="truncate font-semibold">{item.name}</p>
+                  )}
+                  {(item.size || item.estimate) && (
+                    <p className="text-sm text-gray-400">
+                      {item.size ? `${t("size")}: ${item.size}` : null}
+                      {item.size && item.estimate ? " · " : null}
+                      {item.estimate ? t("aiEstimate") : null}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center rounded-md border border-gray-700">
+                      <button
+                        type="button"
+                        aria-label={t("decrease")}
+                        disabled={item.quantity <= 1}
+                        onClick={() => setQuantity(key, item.quantity - 1)}
+                        className="flex h-11 w-11 cursor-pointer items-center justify-center text-gray-300 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40">
+                        <FiMinus />
+                      </button>
+                      <span className="w-8 text-center font-semibold" aria-live="polite">
+                        {item.quantity}
+                      </span>
+                      <button
+                        type="button"
+                        aria-label={t("increase")}
+                        disabled={item.quantity >= maxQty}
+                        onClick={() => setQuantity(key, item.quantity + 1)}
+                        className="flex h-11 w-11 cursor-pointer items-center justify-center text-gray-300 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40">
+                        <FiPlus />
+                      </button>
+                    </div>
+                    <span className="font-bold text-primary">{(item.price * item.quantity).toFixed(2)} ₾</span>
                   </div>
-                  <span className="font-bold text-primary">{(item.price * item.quantity).toFixed(2)} ₾</span>
                 </div>
-              </div>
-              <button
-                type="button"
-                aria-label={`${t("remove")}: ${item.name}`}
-                onClick={() => removeItem(item.productId)}
-                className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-md text-gray-400 hover:bg-red-500/10 hover:text-red-400">
-                <FiTrash2 />
-              </button>
-            </li>
-          ))}
+                <button
+                  type="button"
+                  aria-label={`${t("remove")}: ${item.name}`}
+                  onClick={() => removeItem(key)}
+                  className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-md text-gray-400 hover:bg-red-500/10 hover:text-red-400">
+                  <FiTrash2 />
+                </button>
+              </li>
+            );
+          })}
         </ul>
       </section>
 

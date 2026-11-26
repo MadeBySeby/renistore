@@ -153,7 +153,9 @@ export default function ProfilePage() {
                   </span>
                 </div>
                 <p className="mt-2 text-sm text-gray-400">
-                  {order.items.map((item) => `${item.name} × ${item.quantity}`).join(", ")}
+                  {order.items
+                    .map((item) => `${item.name}${item.size ? ` (${item.size})` : ""} × ${item.quantity}`)
+                    .join(", ")}
                 </p>
                 <p className="mt-1 text-right font-semibold text-primary">{formatGel(order.total)}</p>
               </li>

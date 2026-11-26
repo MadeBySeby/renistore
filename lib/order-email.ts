@@ -69,7 +69,7 @@ function itemsTable(order: PlacedOrder, locale: EmailLocale): string {
     .map(
       (item) => `
         <tr>
-          <td style="padding:8px 0;border-bottom:1px solid #e5e7eb">${escapeHtml(item.name)}</td>
+          <td style="padding:8px 0;border-bottom:1px solid #e5e7eb">${escapeHtml(item.name)}${item.size ? ` <span style="color:#6b7280">(${escapeHtml(item.size)})</span>` : ""}${item.kind === "estimate" ? ` <span style="color:#6b7280">(AI estimate)</span>` : ""}</td>
           <td style="padding:8px 0;border-bottom:1px solid #e5e7eb;text-align:center">${item.quantity}</td>
           <td style="padding:8px 0;border-bottom:1px solid #e5e7eb;text-align:right">${gel(Number(item.price) * item.quantity)}</td>
         </tr>`,

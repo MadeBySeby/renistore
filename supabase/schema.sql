@@ -59,8 +59,15 @@ create table if not exists public.products (
   price numeric(10, 2) not null default 0,
   image_url text,
   description text,
+  sizes jsonb not null default '[]'::jsonb,
   created_at timestamptz not null default now()
 );
+
+-- Sizes look like [{"size": "M", "stock": 2}]. Stock is what the store shows (e.g. "only 2 left");
+-- orders check it but don't count it down. An empty array means the product has no sizes.
+alter table public.products add column if not exists sizes jsonb not null default '[]'::jsonb;
+alter table public.products drop constraint if exists products_sizes_is_array;
+alter table public.products add constraint products_sizes_is_array check (jsonb_typeof(sizes) = 'array');
 
 alter table public.products enable row level security;
 

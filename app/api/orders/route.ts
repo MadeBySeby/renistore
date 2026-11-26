@@ -3,7 +3,17 @@ import { Resend } from "resend";
 import { createClient } from "@/lib/supabase/server";
 import { customerOrderEmail, ownerOrderEmail, type PlacedOrder } from "@/lib/order-email";
 
-const KNOWN_ORDER_ERRORS = ["invalid_name", "invalid_phone", "invalid_items", "invalid_quantity", "product_unavailable"];
+const KNOWN_ORDER_ERRORS = [
+  "invalid_name",
+  "invalid_phone",
+  "invalid_items",
+  "invalid_quantity",
+  "invalid_estimate",
+  "product_unavailable",
+  "size_required",
+  "size_unavailable",
+  "not_enough_stock",
+];
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TEST_SENDER = "ReniStore <onboarding@resend.dev>";
 const DEFAULT_OWNER_EMAIL = "david.sebiskveradze.1@btu.edu.ge";

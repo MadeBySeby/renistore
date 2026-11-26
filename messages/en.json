@@ -27,7 +27,14 @@
     },
     "estimatePrice": "Estimate Price",
     "inStockTitle": "We already have this in the shop",
-    "inStockBody": "No estimate needed — order it at our shop price."
+    "inStockBody": "No estimate needed — order it at our shop price.",
+    "customOrderName": "Custom order (AI estimate)",
+    "orderThis": "Order this item",
+    "orderEstimateHint": "We'll confirm the final price and size when we call you.",
+    "productPrice": "Product price",
+    "shipping": "Shipping",
+    "totalPrice": "Total price",
+    "estimatedWeight": "Estimated weight"
   },
   "shop": {
     "title": "Shop",
@@ -99,7 +106,11 @@
     "invalidPhone": "Please enter a valid phone number.",
     "productUnavailable": "Some items are no longer available. Please review your cart.",
     "orderError": "We couldn't place your order. Please try again.",
-    "emailSent": "We also sent the order details to {email}."
+    "emailSent": "We also sent the order details to {email}.",
+    "size": "Size",
+    "aiEstimate": "AI estimate",
+    "sizeRequired": "Please choose a size for each item.",
+    "notEnoughStock": "Not enough stock for one of the sizes. Please update your cart."
   },
   "orders": {
     "title": "Orders",
@@ -259,5 +270,13 @@
     "title": "Something went wrong",
     "body": "Please try again. If it keeps happening, contact us.",
     "retry": "Try again"
+  },
+  "product": {
+    "size": "Size",
+    "pickSize": "Please choose a size.",
+    "onlyLeft": "Only {count} left",
+    "inStock": "{count} in stock",
+    "almostSoldOut": "Almost sold out",
+    "soldOut": "Sold out"
   }
 }

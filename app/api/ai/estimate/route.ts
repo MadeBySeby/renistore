@@ -116,6 +116,7 @@ export async function POST(req: NextRequest) {
           slug: matched.slug,
           price: Number(matched.price),
           image_url: matched.image_url,
+          sizes: matched.sizes ?? [],
         },
       });
     }

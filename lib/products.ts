@@ -7,7 +7,32 @@ export interface Product {
   price: number;
   image_url?: string;
   description?: string;
+  sizes?: ProductSize[];
   created_at?: string;
+}
+
+export interface ProductSize {
+  size: string;
+  stock: number;
+}
+
+/** A size with this many or fewer pieces shows "only N left". */
+export const LOW_STOCK_LIMIT = 3;
+/** A product whose scarcest in-stock size is at or below this shows "almost sold out" on its card. */
+const ALMOST_SOLD_OUT_LIMIT = 2;
+
+export type StockBadge = "soldOut" | "almostSoldOut" | null;
+
+export function productSizes(product: Pick<Product, "sizes">): ProductSize[] {
+  return Array.isArray(product.sizes) ? product.sizes : [];
+}
+
+export function stockBadge(product: Pick<Product, "sizes">): StockBadge {
+  const sizes = productSizes(product);
+  if (sizes.length === 0) return null;
+  const inStock = sizes.filter((entry) => entry.stock > 0);
+  if (inStock.length === 0) return "soldOut";
+  return Math.min(...inStock.map((entry) => entry.stock)) <= ALMOST_SOLD_OUT_LIMIT ? "almostSoldOut" : null;
 }
 
 export function generateSlug(name: string): string {

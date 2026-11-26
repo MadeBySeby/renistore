@@ -31,8 +31,8 @@ drop policy if exists "Admins update orders" on public.orders;
 create policy "Admins update orders" on public.orders
   for update using (public.is_admin());
 
--- No insert policy: orders are only created through place_order, which takes
--- prices from the products table so a client can't change what it pays.
+-- Catalog lines take prices from products. Estimate lines (AI photo quotes) keep the
+-- quoted price; the shop always confirms by phone before payment.
 create or replace function public.place_order(p_customer jsonb, p_items jsonb)
 returns bigint
 language plpgsql
@@ -44,7 +44,14 @@ declare
   v_phone text := btrim(coalesce(p_customer ->> 'phone', ''));
   v_items jsonb := '[]'::jsonb;
   v_total numeric(10, 2) := 0;
-  v_line record;
+  v_raw jsonb;
+  v_quantity int;
+  v_size text;
+  v_stock int;
+  v_product record;
+  v_est_name text;
+  v_est_price numeric(10, 2);
+  v_est_image text;
   v_order_id bigint;
 begin
   if length(v_name) < 2 or length(v_name) > 100 then
@@ -59,29 +66,76 @@ begin
     raise exception 'invalid_items';
   end if;
 
-  for v_line in
-    select p.id, p.name, p.slug, p.image_url, p.price,
-           (i ->> 'quantity')::int as quantity
-    from jsonb_array_elements(p_items) as i
-    join public.products p on p.id = (i ->> 'product_id')::bigint
+  for v_raw in select value from jsonb_array_elements(p_items) as t(value)
   loop
-    if v_line.quantity < 1 or v_line.quantity > 20 then
+    v_quantity := (v_raw ->> 'quantity')::int;
+    if v_quantity is null or v_quantity < 1 or v_quantity > 20 then
       raise exception 'invalid_quantity';
     end if;
-    v_items := v_items || jsonb_build_object(
-      'product_id', v_line.id,
-      'name', v_line.name,
-      'slug', v_line.slug,
-      'image_url', v_line.image_url,
-      'price', v_line.price,
-      'quantity', v_line.quantity
-    );
-    v_total := v_total + v_line.price * v_line.quantity;
-  end loop;
 
-  if jsonb_array_length(v_items) <> jsonb_array_length(p_items) then
-    raise exception 'product_unavailable';
-  end if;
+    if coalesce(v_raw ->> 'kind', '') = 'estimate' then
+      v_est_name := left(btrim(coalesce(v_raw ->> 'name', '')), 120);
+      v_est_price := (v_raw ->> 'price')::numeric(10, 2);
+      v_est_image := nullif(left(btrim(coalesce(v_raw ->> 'image_url', '')), 500), '');
+      if length(v_est_name) < 2 or v_est_price is null or v_est_price <= 0 or v_est_price > 20000 then
+        raise exception 'invalid_estimate';
+      end if;
+      v_items := v_items || jsonb_build_object(
+        'kind', 'estimate',
+        'name', v_est_name,
+        'slug', 'custom-estimate',
+        'image_url', v_est_image,
+        'price', v_est_price,
+        'quantity', v_quantity,
+        'size', null,
+        'estimate', jsonb_build_object(
+          'productPriceGEL', (v_raw #>> '{estimate,productPriceGEL}')::numeric,
+          'shippingGEL', (v_raw #>> '{estimate,shippingGEL}')::numeric,
+          'estimatedWeightKg', (v_raw #>> '{estimate,estimatedWeightKg}')::numeric
+        )
+      );
+      v_total := v_total + v_est_price * v_quantity;
+      continue;
+    end if;
+
+    select p.id, p.name, p.slug, p.image_url, p.price, p.sizes
+      into v_product
+    from public.products p
+    where p.id = (v_raw ->> 'product_id')::bigint;
+
+    if not found then
+      raise exception 'product_unavailable';
+    end if;
+
+    v_size := null;
+    if jsonb_array_length(v_product.sizes) > 0 then
+      v_size := nullif(btrim(coalesce(v_raw ->> 'size', '')), '');
+      if v_size is null then
+        raise exception 'size_required';
+      end if;
+      select (s ->> 'stock')::int into v_stock
+      from jsonb_array_elements(v_product.sizes) as s
+      where s ->> 'size' = v_size
+      limit 1;
+      if not found then
+        raise exception 'size_unavailable';
+      end if;
+      if coalesce(v_stock, 0) < v_quantity then
+        raise exception 'not_enough_stock';
+      end if;
+    end if;
+
+    v_items := v_items || jsonb_build_object(
+      'product_id', v_product.id,
+      'name', v_product.name,
+      'slug', v_product.slug,
+      'image_url', v_product.image_url,
+      'price', v_product.price,
+      'quantity', v_quantity,
+      'size', v_size
+    );
+    v_total := v_total + v_product.price * v_quantity;
+  end loop;
 
   insert into public.orders (user_id, customer_name, phone, email, city, address, note, items, total)
   values (

@@ -2,10 +2,14 @@ export const ORDER_STATUSES = ["new", "contacted", "completed", "cancelled"] as 
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
 export interface OrderItem {
-  product_id: number;
+  product_id?: number;
+  kind?: "estimate";
   name: string;
+  slug?: string;
+  image_url?: string | null;
   price: number;
   quantity: number;
+  size?: string | null;
 }
 
 export interface Order {
