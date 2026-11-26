@@ -39,7 +39,7 @@ export default function Sidebar({ open, onClose }: { open: boolean; onClose: () 
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-gray-800 bg-[#060b17] p-4 transition-transform duration-300 md:sticky md:top-20 md:z-auto md:h-[calc(100vh-6.5rem)] md:w-60 md:translate-x-0 md:rounded-2xl md:border md:bg-gray-900/60 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-gray-800 bg-(--panel-bg) p-4 transition-transform duration-300 md:sticky md:top-20 md:z-auto md:h-[calc(100vh-6.5rem)] md:w-60 md:translate-x-0 md:rounded-2xl md:border md:bg-gray-900/60 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}>
         <div className="mb-6 flex items-center justify-between gap-2 px-2">

@@ -8,7 +8,9 @@
     "contact": "Contact",
     "cart": "Cart",
     "login": "Login",
-    "logout": "Logout"
+    "logout": "Logout",
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme"
   },
   "home": {
     "title": "Welcome to ReniStore",

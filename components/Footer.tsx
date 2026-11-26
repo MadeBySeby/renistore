@@ -12,7 +12,7 @@ export default function Footer() {
   const tContact = useTranslations("contact");
 
   return (
-    <footer className="w-full border-t border-gray-800 bg-black/40">
+    <footer className="w-full border-t border-gray-800 bg-gray-950/40">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-2 md:grid-cols-4 md:px-8">
         <div className="flex flex-col gap-3 md:col-span-2">
           <Link href={`/${locale}`} className="w-fit text-2xl font-bold text-primary">

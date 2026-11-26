@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -7,24 +9,59 @@
   --font-sans: var(--font-poppins), var(--font-georgian), system-ui, -apple-system, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #020712;
-    /* --foreground: #ededed; */
-    --color-primary: #47b977;
-  }
+:root {
+  --page-bg: #020712;
+  --page-glow: #111827;
+  --panel-bg: #060b17;
+  --text-default: #ededed;
+  color-scheme: dark;
 }
+
+/*
+ * Light theme. The UI is written with dark-first Tailwind classes (bg-gray-900, text-white…),
+ * so instead of duplicating every class we flip the gray scale and "white" here.
+ * Unlayered rules beat Tailwind's @layer theme defaults.
+ */
+html[data-theme="light"] {
+  --page-bg: #f3f4f6;
+  --page-glow: #ffffff;
+  --panel-bg: #ffffff;
+  --text-default: #111827;
+  color-scheme: light;
+
+  --color-white: #0b1220;
+  --color-gray-50: #030712;
+  --color-gray-100: #111827;
+  --color-gray-200: #1f2937;
+  --color-gray-300: #374151;
+  --color-gray-400: #4b5563;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #9ca3af;
+  --color-gray-700: #d1d5db;
+  --color-gray-800: #e5e7eb;
+  --color-gray-900: #ffffff;
+  --color-gray-950: #f9fafb;
+
+  --color-red-300: #b91c1c;
+  --color-red-400: #dc2626;
+  --color-sky-300: #0369a1;
+}
+
+/* Text on solid brand-green surfaces stays white in both themes. */
+html[data-theme="light"] .bg-primary,
+html[data-theme="light"] .hover\:bg-primary:hover {
+  --color-white: #ffffff;
+}
+
 html {
-  background-color: #020712;
+  background-color: var(--page-bg);
 }
 body {
-  background: radial-gradient(circle at top, #111827 0%, #020712 55%);
-  color: #ededed;
+  background: radial-gradient(circle at top, var(--page-glow) 0%, var(--page-bg) 55%);
+  color: var(--text-default);
   --color-primary: #47b977;
 
   font-family: var(--font-poppins), var(--font-georgian), system-ui, -apple-system, sans-serif;
-  /* font-family: "Poppins", sans-serif; */
-  /* font-family: Arial, Helvetica, sans-serif; */
 }
 @layer base {
   ul {

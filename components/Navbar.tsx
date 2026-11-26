@@ -5,6 +5,7 @@ import { FiShoppingCart, FiUser } from "react-icons/fi";
 import { useCart } from "@/app/context/CartContext";
 import { BiMenu, BiX } from "react-icons/bi";
 import LanguageSwitcher from "./LanguageSwitcher";
+import ThemeToggle from "./ThemeToggle";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/app/context/AuthContext";
 
@@ -37,7 +38,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-40 border-b border-gray-800 bg-[#020712]/85 backdrop-blur">
+    <nav className="sticky top-0 z-40 border-b border-gray-800 bg-(--page-bg)/85 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
         <Link
           href={`/${locale}`}
@@ -58,6 +59,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-3">
           <LanguageSwitcher />
+          <ThemeToggle />
           <div className="hidden items-center gap-3 md:flex">
             {user ? (
               <button
@@ -101,7 +103,7 @@ export default function Navbar() {
       </div>
 
       {menuOpen && (
-        <div className="border-t border-gray-800 bg-[#020712] md:hidden">
+        <div className="border-t border-gray-800 bg-(--page-bg) md:hidden">
           <ul className="flex flex-col px-4 py-2">
             {links.map((link) => (
               <li key={link.href}>

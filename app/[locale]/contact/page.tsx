@@ -182,14 +182,14 @@ export default function ContactPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 rounded-full flex items-center justify-center hover:scale-110 transition-transform">
-                  <FaInstagram className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  <FaInstagram className="w-5 h-5 sm:w-6 sm:h-6 text-[#fff]" />
                 </a>
                 <a
                   href="https://tiktok.com/@reni__istore"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-full flex items-center justify-center hover:scale-110 transition-transform border border-gray-700">
-                  <FaTiktok className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  <FaTiktok className="w-4 h-4 sm:w-5 sm:h-5 text-[#fff]" />
                 </a>
                 {/* <a
                   href="https://facebook.com"

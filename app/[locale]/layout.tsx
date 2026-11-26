@@ -8,6 +8,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { locales } from "@/i18n/config";
 import { AuthProvider } from "../context/AuthContext";
 import { CartProvider } from "../context/CartContext";
+import { ThemeProvider, themeInitScript } from "../context/ThemeContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -35,7 +36,7 @@ export const viewport: Viewport = {
   themeColor: "#020712",
   width: "device-width",
   initialScale: 1,
-  colorScheme: "dark",
+  colorScheme: "dark light",
 };
 
 export default async function RootLayout({
@@ -48,25 +49,32 @@ export default async function RootLayout({
   const { locale } = await params;
   const messages = await getMessages({ locale });
   return (
-    <html lang={locale} className={`dark ${poppins.variable} ${notoGeorgian.variable}`}>
+    <html
+      lang={locale}
+      data-theme="dark"
+      className={`${poppins.variable} ${notoGeorgian.variable}`}
+      suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         {process.env.NEXT_PUBLIC_SUPABASE_URL && (
           <link rel="preconnect" href={process.env.NEXT_PUBLIC_SUPABASE_URL} crossOrigin="" />
         )}
       </head>
 
-      <body className=" min-h-screen bg-[#020712] text-white">
+      <body className=" min-h-screen bg-(--page-bg) text-white">
         <NextIntlClientProvider messages={messages} locale={locale}>
-          <AuthProvider>
-            <CartProvider>
-              <div className=" min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,_#111827_0,_#020712_55%)]">
-                <Navbar />
-                <main className="flex-1 w-full">{children}</main>
+          <ThemeProvider>
+            <AuthProvider>
+              <CartProvider>
+                <div className=" min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,var(--page-glow)_0,var(--page-bg)_55%)]">
+                  <Navbar />
+                  <main className="flex-1 w-full">{children}</main>
 
-                <Footer />
-              </div>
-            </CartProvider>
-          </AuthProvider>
+                  <Footer />
+                </div>
+              </CartProvider>
+            </AuthProvider>
+          </ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>
