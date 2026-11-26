@@ -103,3 +103,36 @@ $$;
 
 revoke all on function public.place_order(jsonb, jsonb) from public;
 grant execute on function public.place_order(jsonb, jsonb) to anon, authenticated;
+
+-- Same as place_order, but returns the saved order so the server can email a confirmation
+-- without needing read access to other people's orders.
+create or replace function public.place_order_with_details(p_customer jsonb, p_items jsonb)
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_order_id bigint := public.place_order(p_customer, p_items);
+begin
+  return (
+    select jsonb_build_object(
+      'id', o.id,
+      'customer_name', o.customer_name,
+      'phone', o.phone,
+      'email', o.email,
+      'city', o.city,
+      'address', o.address,
+      'note', o.note,
+      'items', o.items,
+      'total', o.total,
+      'created_at', o.created_at
+    )
+    from public.orders o
+    where o.id = v_order_id
+  );
+end;
+$$;
+
+revoke all on function public.place_order_with_details(jsonb, jsonb) from public;
+grant execute on function public.place_order_with_details(jsonb, jsonb) to anon, authenticated;

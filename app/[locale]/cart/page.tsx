@@ -1,7 +1,6 @@
 "use client";
 import { useAuth } from "@/app/context/AuthContext";
 import { MAX_QUANTITY, useCart } from "@/app/context/CartContext";
-import { createClient } from "@/lib/supabase/client";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -35,6 +34,7 @@ export default function CartPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [orderId, setOrderId] = useState<number | null>(null);
+  const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
 
   useEffect(() => {
     if (profile?.name) setName((current) => current || profile.name || "");
@@ -48,19 +48,31 @@ export default function CartPage() {
     if (!PHONE_PATTERN.test(phone.trim())) return setError(t("invalidPhone"));
 
     setSubmitting(true);
-    const { data, error: rpcError } = await createClient().rpc("place_order", {
-      p_customer: { name, phone, email, city, address, note },
-      p_items: items.map((item) => ({ product_id: Number(item.productId), quantity: item.quantity })),
-    });
-    setSubmitting(false);
-
-    if (rpcError) {
-      console.error("Order failed:", rpcError.message);
-      setError(t(orderErrorKey(rpcError.message)));
-      return;
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          locale,
+          customer: { name, phone, email, city, address, note },
+          items: items.map((item) => ({ product_id: Number(item.productId), quantity: item.quantity })),
+        }),
+      });
+      const result = (await response.json().catch(() => ({}))) as { id?: number; error?: string; emailSent?: boolean };
+      if (!response.ok || typeof result.id !== "number") {
+        console.error("Order failed:", result.error ?? response.status);
+        setError(t(orderErrorKey(result.error ?? "")));
+        return;
+      }
+      setOrderId(result.id);
+      setConfirmationEmail(result.emailSent ? email.trim() : null);
+      clear();
+    } catch (err) {
+      console.error("Order failed:", err);
+      setError(t("orderError"));
+    } finally {
+      setSubmitting(false);
     }
-    setOrderId(data as number);
-    clear();
   }
 
   if (orderId !== null) {
@@ -70,6 +82,9 @@ export default function CartPage() {
           <IoCheckmarkCircle className="mx-auto text-6xl text-primary" aria-hidden />
           <h1 className="text-2xl font-bold">{t("successTitle")}</h1>
           <p className="text-gray-300">{t("successBody", { id: orderId })}</p>
+          {confirmationEmail && (
+            <p className="text-sm text-gray-400">{t("emailSent", { email: confirmationEmail })}</p>
+          )}
           <Link
             href={`/${locale}/shop`}
             className="inline-flex min-h-11 items-center rounded-md bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary/90">

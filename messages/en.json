@@ -82,7 +82,7 @@
     "namePlaceholder": "Your name",
     "phone": "Phone",
     "phonePlaceholder": "+995 5XX XX XX XX",
-    "email": "Email (optional)",
+    "email": "Email (for your order confirmation)",
     "city": "City",
     "cityPlaceholder": "Tbilisi",
     "address": "Address",
@@ -96,7 +96,8 @@
     "invalidName": "Please enter your name.",
     "invalidPhone": "Please enter a valid phone number.",
     "productUnavailable": "Some items are no longer available. Please review your cart.",
-    "orderError": "We couldn't place your order. Please try again."
+    "orderError": "We couldn't place your order. Please try again.",
+    "emailSent": "We also sent the order details to {email}."
   },
   "orders": {
     "title": "Orders",
